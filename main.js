@@ -82,7 +82,6 @@ var globalResponseHandler = function(request, done) {
 ////
 //   PUBLIC API
 ////
-
 module.exports = function(apiKey) {
     var get = getRequestWithApi(),
         post = postRequestWithApi(),
@@ -100,7 +99,6 @@ module.exports = function(apiKey) {
     ///
     //   Get Projects
     ////
-
     api.getProjects = function(done){
         get('', headerType1, function(err, result){
             if (err) return done(err);
@@ -111,7 +109,6 @@ module.exports = function(apiKey) {
     ///
     //   Create Project
     ////
-
     api.createProject = function(data, done){
       const endPoint = 'projects/';
       post(endPoint, headerType1, data, function(err, result){
@@ -123,7 +120,6 @@ module.exports = function(apiKey) {
     ///
     //   Get a project
     ////
-
     api.getAProject = function(data, done){
       const endPoint = 'projects/' + data.projectKey + '/';
       get(endPoint, headerType2, function(err, result){
@@ -135,7 +131,6 @@ module.exports = function(apiKey) {
     ///
     //   Create a phrase
     ////
-
     api.createAPhrase = function(data, done){
       const endPoint = 'projects/' + data.projectKey + '/phrases';
       post(endPoint, headerType1, data.phraseList ,function(err, result){
@@ -147,7 +142,6 @@ module.exports = function(apiKey) {
     ///
     //   Get Phrases
     ////
-
     api.getPhrases = function(data, done){
       var queryParams = '?';
       if(data.limit){
@@ -175,7 +169,6 @@ module.exports = function(apiKey) {
     ///
     //   Get a phrase
     ////
-
     api.getAPhrase = function(data, done){
       const endPoint = 'projects/' + data.projectKey + '/phrases/' + data.id;
       get(endPoint, headerType1, function(err, result){
@@ -187,7 +180,6 @@ module.exports = function(apiKey) {
     ///
     //   Delete a phrase
     ////
-
     api.deleteAPhrase = function(data, done){
       const endPoint = 'projects/'+ data.projectKey + '/phrases/' + data.id;
       deleteCall(endPoint, headerType2, function(err, result){
@@ -199,7 +191,6 @@ module.exports = function(apiKey) {
     ///
     //   Create a phrase
     ////
-
     api.createATranslation = function(data, done){
       const endPoint = 'projects/' + data.projectKey + '/translations/';
       console.log(JSON.stringify(data.translationDetails));
@@ -212,7 +203,6 @@ module.exports = function(apiKey) {
     ///
     //   Get translations
     ////
-
     api.getTranslations = function(data, done){
       const endPoint = 'projects/' + data.projectKey + '/translations?language=' + data.language ;
       get(endPoint, headerType2, function(err, result){
@@ -224,7 +214,6 @@ module.exports = function(apiKey) {
     ///
     //   Get a translations
     ////
-
     api.getATranslation = function(data, done){
       const endPoint = 'projects/' + data.projectKey + '/translations/' + data.translationId + '?language=' + data.language ;
       console.log(endPoint);
@@ -237,7 +226,6 @@ module.exports = function(apiKey) {
     ///
     //   Update a translation
     ////
-
     api.updateATranslation = function(data, done){
       const endPoint = 'projects/' + data.projectKey + '/translations/' + data.translationId;
       put(endPoint, headerType1, data.translationDetails ,function(err, result){
@@ -249,7 +237,6 @@ module.exports = function(apiKey) {
     ///
     //   Delete a translation
     ////
-
     api.deleteATranslation = function(data, done){
       const endPoint = 'projects/' + data.projectKey + '/translation/' + data.translationId +'/';
       deleteCall(endPoint, headerType2, function(err, result){
@@ -261,7 +248,6 @@ module.exports = function(apiKey) {
     ///
     //   Get languages
     ////
-
     api.getLanguages = function(data, done){
       var code = '';
       if(data.code){
@@ -277,7 +263,6 @@ module.exports = function(apiKey) {
     ///
     //   Get team members
     ////
-
     api.getTeamMembers = function(data, done){
       const endPoint = 'projects/' + data.projectKey + '/team-members';
       get(endPoint, headerType2, function(err, result){
@@ -287,24 +272,48 @@ module.exports = function(apiKey) {
     }
 
     ///
-    //   Get team members
+    //   Translate a Phrase
     ////
-
     api.translatePhrase = function(data, done){
       var sourceLanguage = '';
       if(data.sourceLanguage){
         sourceLanguage = data.sourceLanguage;
       }
-      const endPoint = 'projects/' + data.projectKey + '/machine-translations/translate?phrase=' + data.phrase + '&targetLanguage=' + data.targetLanguage + '&sourceLanguage=' + sourceLanguage;
+      const endPoint = 'projects/' + data.projectKey + '/machine-translations/translate?phrase=' + `${data.phrase}` + '&targetLanguage=' + data.targetLanguage + '&sourceLanguage=' + sourceLanguage;
       get(endPoint, headerType2, function(err, result){
           if (err) return done(err);
           done(null, result);
-      })
-    }
+      });
+    };
+
+    ///
+    //   Detect language of a phrase
+    ////
+    api.detectLanguage = function(data,done){
+      if(data.phrase)
+      {
+        const endPoint = 'projects/' + data.projectKey + '/machine-translations/detect?phrase=' + data.phrase;
+        get(endPoint, headerType2, function(err, result){
+          if(err) return done(err);
+          done(null, result);
+        });
+      }
+    };
+
+    ///
+    //  Get supported languages list
+    ////
+    api.languagesList = function(data,done){
+      const endPoint = 'projects/' + data.projectKey + '/machine-translations/languages';
+      get(endPoint, headerType2, function(err, result){
+        if(err) return done(err);
+        done(null, result);
+      });
+    };
+
     ///
     //   RETURN APIextend
     ////
-  
     return {
         testAPI:              api.testAPI,
         getProjects:          api.getProjects,
@@ -320,6 +329,9 @@ module.exports = function(apiKey) {
         updateATranslation:   api.updateATranslation,
         deleteATranslation:   api.deleteATranslation,
         getLanguages:         api.getLanguages,
-        getTeamMembers:       api.getTeamMembers
+        getTeamMembers:       api.getTeamMembers,
+        translatePhrase:      api.translatePhrase,
+        detectLanguage:       api.detectLanguage,
+        languagesList:        api.languagesList,
       };
 }
