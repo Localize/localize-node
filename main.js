@@ -20,6 +20,7 @@ var getRequestWithApi = function() {
 
 var postRequestWithApi = function(){
   return function(path, headerData, data, done) {
+    delete data.projectKey;
     let options = {
         method: 'POST',
         url: apibase + path,
@@ -33,6 +34,7 @@ var postRequestWithApi = function(){
 
 var putRequestWithApi = function(){
   return function(path, headerData, data, done) {
+    delete data.projectKey;
     let options = {
         method: 'PUT',
         url: apibase + path,
@@ -95,6 +97,44 @@ module.exports = function(apiKey) {
         headerType2 = {
           'Authorization': 'Bearer '+apiKey,
         }
+    
+    ///
+    //  Import contents
+    ////
+    api.importContent = function(data, done){
+      const endPoint = 'projects/' + data.projectKey + '/resources';
+      post(endPoint, headerType1, data, function(err, result){
+          if (err) return done(err);
+          done(null, result);
+      })
+    }
+
+    ///
+    //  Export contents
+    ////
+    api.exportContent = function(data, done){
+      var queryParams = '?';
+      if(data.language){
+        queryParams = queryParams + "language=" + data.language + "&";
+      }
+      if(data.format){
+        queryParams = queryParams + "format=" + data.format + "&";
+      }
+      if(data.type){
+        queryParams = queryParams + "type=" + data.type + "&";
+      }
+      if(data.filter){
+        queryParams = queryParams + "filter=" + data.filter + "&";
+      }
+      if(data.context){
+        queryParams = queryParams + "context=" + data.context + "&";
+      }
+      const endPoint = 'projects/' + data.projectKey + '/resources' + queryParams;
+      get(endPoint, headerType2, function(err, result){
+          if (err) return done(err);
+          done(null, result);
+      })
+    }
 
     ///
     //   Get Projects
@@ -279,7 +319,7 @@ module.exports = function(apiKey) {
       if(data.sourceLanguage){
         sourceLanguage = data.sourceLanguage;
       }
-      const endPoint = 'projects/' + data.projectKey + '/machine-translations/translate?phrase=' + `${data.phrase}` + '&targetLanguage=' + data.targetLanguage + '&sourceLanguage=' + sourceLanguage;
+      const endPoint = 'projects/' + data.projectKey + '/machine-translations/translate?phrase=' + `${data.phrase}` + '&target=' + data.targetLanguage + '&source=' + sourceLanguage;
       get(endPoint, headerType2, function(err, result){
           if (err) return done(err);
           done(null, result);
@@ -315,7 +355,8 @@ module.exports = function(apiKey) {
     //   RETURN APIextend
     ////
     return {
-        testAPI:              api.testAPI,
+        importContent:        api.importContent,   
+        exportContent:        api.exportContent,
         getProjects:          api.getProjects,
         createProject:        api.createProject,
         getAProject:          api.getAProject,
