@@ -18,6 +18,27 @@ Endpoints
 ----------
   
 - All callbacks are passed an error and response: `callback(err, res)`.
-- Supports camelCase and underscore naming conventions (Gengo uses the underscore convention).
 - Please refer to Localize's [API Docs](https://help.localizejs.com/reference#api-overview) for endpoint details.
 
+Methods
+-------
+
+-importContent
+-exportContent
+-getProjects
+-createProject
+-getAProject
+-createAPhrase
+-getPhrases
+-getAPhrase
+-deleteAPhrase
+-createATranslation
+-getTranslations
+-getATranslation
+-updateATranslation
+-deleteATranslation
+-getLanguages
+-getTeamMembers
+-translatePhrase
+-detectLanguage
+-languagesList

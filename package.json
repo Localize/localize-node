@@ -4,7 +4,7 @@
   "description": "A wrapper for Localize public API's",
   "main": "main.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node ./node_modules/mocha/bin/mocha"
   },
   "author": "",
   "license": "ISC",
@@ -14,5 +14,11 @@
     "querystring": "^0.2.0",
     "request": "^2.88.0",
     "underscore": "^1.9.1"
+  },
+  "devDependencies": {
+    "sinon": "^7.3.1",
+    "chai": "^4.2.0",
+    "mocha": "^6.0.2",
+    "should": "^13.2.3"
   }
 }
