@@ -15,55 +15,6 @@ describe('Localize APIs', () => {
         translationId: '',
     }
 
-    it('getlanguagesList', function (done) {
-        this.timeout(20000);
-        const data = {
-            projectKey:'HnaArqQystM8D'
-        };
-        
-        localizeService.project.languages(data, function(err, result){
-            if(err) {
-                console.log('error in languagesList :' + err);
-            }
-            result.data.languages.should.be.Array();
-            done();
-        });
-    });;
-
-    it('translatePhrase', function (done) {
-        this.timeout(10000);
-        const data = {
-            projectKey:'HnaArqQystM8D',
-            phrase:'This is a sample text',
-            target:'fr',
-            source:'en',
-        }
-        
-        localizeService.machine.translate(data, function(err, result){
-            if(err) {
-                console.log('error in translatePhrase:' + err);
-            }
-            result.data.translation.should.eql('Ceci est un exemple de texte');
-            done();
-        });
-    });
-
-    it('detectLanguage', function (done) {
-        this.timeout(10000);
-        const data = {
-            projectKey:'HnaArqQystM8D',
-            phrase:'Ceci est un exemple de texte',
-        }
-
-        localizeService.machine.detectLanguage(data, function(err, result){
-            if(err) {
-                console.log('error in detectLanguage:' + err);
-            }
-            result.data.language.should.eql("fr");
-            done();
-        });
-    });
-
     it.skip('importContent', function (done) {
         this.timeout(10000);
 
@@ -124,6 +75,18 @@ describe('Localize APIs', () => {
         });
     });
 
+    it('getProjects', function (done) {
+        this.timeout(10000);
+
+        localizeService.project.getAll(function(err, result){
+            if(err) {
+                console.log('error in createProject:' + err);
+            }
+            result.data.projects.should.be.an.Array();
+            done();
+        });
+    });
+
     it('getAProject', function (done) {
         this.timeout(10000);
         data = {
@@ -134,17 +97,78 @@ describe('Localize APIs', () => {
             if(err) {
                 console.log('error in getAProject:' + err);
             }
-            done();
             result.data.project.should.have.property('id');
+            done();
+            
         });
     });
 
+    it('should fail to get projects', function (done) {
+        this.timeout(10000);
+        data = {
+            projectKey:'',
+        }
+
+        localizeService.project.getOne(data, function(err, result){
+            if(err) {
+                console.log('error in getAProject:' + err);
+                err.message.should.be.eql('Invalid input params');
+            }
+            done(); 
+        });
+    });
+
+    it('getLanguages', function (done) {
+        this.timeout(10000);
+        data = {
+            "projectKey" : "HnaArqQystM8D",
+            "code" : "en",
+        }
+
+        localizeService.project.languages(data, function(err, result){
+            if(err) {
+                console.log('error in getLanguages:' + err);
+            }
+            result.data.languages.should.be.an.Array();
+            done();
+        });
+    });
+
+    it('getTeamMembers', function (done) {
+        this.timeout(10000);
+        const data = {
+            "projectKey" : "HnaArqQystM8D",
+        }
+        localizeService.project.getTeam(data,function(err,result){
+            if(err) {
+                console.log('error in getTeamMembers:' + err);
+            }
+            result.data.team.should.be.an.Array();
+            done();
+        });
+    });
+
+
+    it('getlanguagesList', function (done) {
+        this.timeout(20000);
+        const data = {
+            projectKey:'HnaArqQystM8D'
+        };
+        
+        localizeService.project.languages(data, function(err, result){
+            if(err) {
+                console.log('error in languagesList :' + err);
+            }
+            result.data.languages.should.be.Array();
+            done();
+        });
+    });;
 
     it('createAPhrase', function (done) {
         this.timeout(10000);
         data = {
             projectKey:'HnaArqQystM8D',
-            phraseList:{ "phrases": [ { "phrase": "My new phrase", "context":"this phrase has context"} ] }
+            phraseList:{ phrases: [{ 'phrase': 'phrase4', 'context': 'context' }] }
         }
 
         localizeService.phrase.create(data, function(err, result){
@@ -154,16 +178,15 @@ describe('Localize APIs', () => {
             result.meta.status.should.eql(200);
             done();
         });
-    }).timeout(5000);
+    });
 
     it('getPhrases', function (done) {
         this.timeout(10000);
         data = { 
             "projectKey" : "HnaArqQystM8D", 
-            // "limit":"2", 
-            // "skip":"1", 
-            // "labels":"", 
-            "context":"this phrase has context", 
+            "limit":"2",
+            'state':'pending', 
+            "context":"context", 
         }
 
         localizeService.phrase.getAll(data, function(err, result){
@@ -304,32 +327,36 @@ describe('Localize APIs', () => {
     });
 
 
-    it('getLanguages', function (done) {
+    it('translatePhrase', function (done) {
         this.timeout(10000);
-        data = {
-            "projectKey" : "HnaArqQystM8D",
-            "code" : "en",
+        const data = {
+            projectKey:'HnaArqQystM8D',
+            phrase:'This is a sample text',
+            target:'fr',
+            source:'en',
         }
-
-        localizeService.project.languages(data, function(err, result){
+        
+        localizeService.machine.translate(data, function(err, result){
             if(err) {
-                console.log('error in getLanguages:' + err);
+                console.log('error in translatePhrase:' + err);
             }
-            result.data.languages.should.be.an.Array();
+            result.data.translation.should.eql('Ceci est un exemple de texte');
             done();
         });
     });
 
-    it('getTeamMembers', function (done) {
+    it('detectLanguage', function (done) {
         this.timeout(10000);
         const data = {
-            "projectKey" : "HnaArqQystM8D",
+            projectKey:'HnaArqQystM8D',
+            phrase:'Ceci est un exemple de texte',
         }
-        localizeService.project.getTeam(data,function(err,result){
+
+        localizeService.machine.detectLanguage(data, function(err, result){
             if(err) {
-                console.log('error in getTeamMembers:' + err);
+                console.log('error in detectLanguage:' + err);
             }
-            result.data.team.should.be.an.Array();
+            result.data.language.should.eql("fr");
             done();
         });
     });

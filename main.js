@@ -149,7 +149,8 @@ module.exports = function(apiKey) {
       },
       // Get all projects
       getAll: (done) => {
-        get('', function(err, result){
+        const endPoint = 'projects';
+        get(endPoint, function(err, result){
             if (err) return done(err);
             done(null, result);
         })
@@ -226,7 +227,6 @@ module.exports = function(apiKey) {
       create: (data, done) => {
         if(!data.projectKey || !data.translationDetails) return done(new Error('Invalid input params'));
         const endPoint = 'projects/' + data.projectKey + '/translations';
-        console.log(JSON.stringify(data.translationDetails));
         post(endPoint, data.translationDetails ,function(err, result){
             if (err) return done(err);
             done(null, result);
@@ -245,7 +245,6 @@ module.exports = function(apiKey) {
       getOne: (data, done) => {
         if(!data.projectKey || !data.translationId || !data.language ) return done(new Error('Invalid input params'));
         const endPoint = 'projects/' + data.projectKey + '/translations/' + data.translationId;
-        console.log(endPoint);
         get(endPoint, data, function(err, result){
             if (err) return done(err);
             done(null, result);
