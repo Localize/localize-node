@@ -1,0 +1,23 @@
+<?xml version = "1.0" encoding="UTF-8"?>
+<xliff version="1.2">
+<file original="main" source-language="de" target-language="en">
+<head></head>
+<body>
+  <trans-unit>
+    <source xml:lang="de">Wenn Sie diese Zahlungsweise nur auf bestimmte Länder beschränken wollen, können Sie diese hier auswählen.&lt;/sourc&gt;</source>
+    <target xml:lang="en">If you want to restrict this form of payment only to certain countries, you can select this one.&lt;/sourc&gt;</target>
+  </trans-unit>
+
+  <trans-unit>
+    <source xml:lang="de">IBAN&lt;/sourc&gt;</source>
+    <target xml:lang="en">IBAN&lt;/sourc&gt;</target>
+  </trans-unit>
+
+  <trans-unit>
+    <source xml:lang="de">Diese %anzahl% Spendenquittungen werden in einem PDF zusammengefassen und Ihnen als Download angeboten. Der Vorgang kann etwas Zeit beanspruchen.</source>
+    <target xml:lang="en">These %anzahl% donation receipts will be merged, put into a PDF and offered as a download. The process may take some time.</target>
+  </trans-unit>
+</body>
+</file>
+</xliff>
+
