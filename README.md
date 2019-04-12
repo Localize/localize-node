@@ -64,6 +64,7 @@ Endpoints
         }, callback);
 
 **localizeServices.phrase**
+
     localizeService.phrase.create({
             projectKey: <your projectkey>,
             phraseList: { phrases: [{ 'phrase': 'phrase1', 'context': 'context1' }] },
