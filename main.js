@@ -76,7 +76,7 @@ const globalResponseHandler = function(requestOptions, cb) {
         },
       });
 
-      return cb(err, null);
+      return cb(err, res.body);
     }
 
     // Try to parse response

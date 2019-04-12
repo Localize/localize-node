@@ -203,7 +203,7 @@ describe('Localize APIs', () => {
         this.timeout(10000);
         const data = {
             projectKey: project_key,
-            phraseList: { phrases: [{ 'phrase': 'phrase4', 'context': 'context' }] }
+            phraseList: { phrases: [{ 'phrase': 'phrase4', 'context': 'context' }] },
         };
 
         localizeService.phrase.create(data, function(err, result){
@@ -376,7 +376,7 @@ describe('Localize APIs', () => {
         this.timeout(10000);
         const data = { 
             language: 'fr',
-            projectKey: project_key 
+            projectKey: project_key, 
         };
 
         localizeService.translation.getAll(data, function(err, result){
@@ -392,7 +392,7 @@ describe('Localize APIs', () => {
         this.timeout(10000);
         const data = { 
             language: '',
-            projectKey: project_key 
+            projectKey: project_key, 
         };
 
         localizeService.translation.getAll(data, function(err, result){
