@@ -4,49 +4,69 @@ var describe = mocha.describe
 var it = mocha.it
 let chai = require('chai');
 let should = require('should');
-const key = 'b1f14c23539766384d760733f94ba20e';
-const Readable = require('stream').Readable;
-const localizeService = require('../main')(key);
+const fs = require('fs');
+const API_key = 'bdf2f149187f5a48c2ac2515041f6f91';
+const project_key = 'GKmjp5I2kObFE';
+const localizeService = require('../main')(API_key);
 
 describe('Localize APIs', () => {
     let projectTestData = {
-        projectId: '',
-        phraseId: '',
-        translationId: '',
-    }
+            projectId: '',
+            phraseId: '',
+            translationId: '',
+        };
 
-    it.skip('importContent', function (done) {
+    it('Should import contents from CSV file', function (done) {
         this.timeout(10000);
-
-        const stream = new Readable();
-        stream.push(__dirname + '/phrase.xliff');
-        stream.push(null);
         const data = {
-            projectKey:'HnaArqQystM8D',
-            language:'en',
-            format:'XLIFF',
-            type:'glossary',
-            file:__dirname + '/phrase.xliff',
-            content:stream,
-        }
+            projectKey: project_key,
+            language: 'fr',
+            format: 'CSV',
+            type: 'glossary',
+            filename: 'to-translte.csv',
+            file: __dirname + '/to-translte.csv',
+            contentType: 'text/csv',
+        };
 
         localizeService.content.import(data, function(err, result){
             if(err) {
                 console.log('error in importContent:' + err);
+            }
+            result.meta.status.should.eql(200);
+            done();
+            
+        });
+    });
+
+    it('Should fail to import contents from CSV file', function (done) {
+        this.timeout(10000);
+        const data = {
+            projectKey: project_key,
+            language: 'fr',
+            format: '',
+            type: 'glossary',
+            filename: 'to-translte.csv',
+            file: __dirname + '/to-translte.csv',
+            contentType: 'text/csv',
+        };
+
+        localizeService.content.import(data, function(err, result){
+            if(err) {
+                err.should.not.be.eql(null);
             }
             done();
             
         });
     });
 
-    it('exportContent', function (done) {
+    it('Should export contents as JSON', function (done) {
         this.timeout(10000);
-        data = {
-            projectKey:'HnaArqQystM8D',
+        const data = {
+            projectKey: project_key,
             language: 'en',
             format: 'JSON',
             context: 'An active phrase context',
-        }
+        };
 
         localizeService.content.export(data, function(err, result){
             if(err) {
@@ -57,13 +77,29 @@ describe('Localize APIs', () => {
         });
     });
 
-    it('createProject', function (done) {
+    it('Should fail to export contents as JSON', function (done) {
         this.timeout(10000);
-        data = {
-            projectKey:'HnaArqQystM8D',
+        const data = {
+            projectKey: project_key,
+            language: 'en',
+            format: '',
+            context: 'An active phrase context',
+        };
+
+        localizeService.content.export(data, function(err, result){
+            if(err) {
+                err.should.not.be.eql(null);
+            }
+            done();
+        });
+    });
+
+    it('Should create a new project', function (done) {
+        this.timeout(10000);
+        const data = {
             name: 'testing1',
             sourceLanguage: 'en',
-        }
+        };
 
         localizeService.project.create(data, function(err, result){
             if(err) {
@@ -75,23 +111,38 @@ describe('Localize APIs', () => {
         });
     });
 
-    it('getProjects', function (done) {
+    it('Should fail to create a new project', function (done) {
+        this.timeout(10000);
+        const data = {
+            name: 'testing1',
+            sourceLanguage: '',
+        };
+
+        localizeService.project.create(data, function(err, result){
+            if(err) {
+                err.should.not.be.eql(null);
+            }
+            done();
+        });
+    });
+
+    it('Should get list of projects', function (done) {
         this.timeout(10000);
 
         localizeService.project.getAll(function(err, result){
             if(err) {
-                console.log('error in createProject:' + err);
+                console.log('error in get Project:' + err);
             }
             result.data.projects.should.be.an.Array();
             done();
         });
     });
 
-    it('getAProject', function (done) {
+    it('Should get a single Project', function (done) {
         this.timeout(10000);
-        data = {
-            projectKey:'HnaArqQystM8D',
-        }
+        const data = {
+            projectKey: project_key,
+        };
 
         localizeService.project.getOne(data, function(err, result){
             if(err) {
@@ -103,27 +154,26 @@ describe('Localize APIs', () => {
         });
     });
 
-    it('should fail to get projects', function (done) {
+    it('Should fail to get projects', function (done) {
         this.timeout(10000);
-        data = {
-            projectKey:'',
-        }
+        const data = {
+            projectKey: '',
+        };
 
         localizeService.project.getOne(data, function(err, result){
             if(err) {
-                console.log('error in getAProject:' + err);
                 err.message.should.be.eql('Invalid input params');
             }
             done(); 
         });
     });
 
-    it('getLanguages', function (done) {
+    it('Should get list of languages', function (done) {
         this.timeout(10000);
-        data = {
-            "projectKey" : "HnaArqQystM8D",
-            "code" : "en",
-        }
+        const data = {
+            projectKey: project_key,
+            code: 'en',
+        };
 
         localizeService.project.languages(data, function(err, result){
             if(err) {
@@ -134,11 +184,12 @@ describe('Localize APIs', () => {
         });
     });
 
-    it('getTeamMembers', function (done) {
+    it('Should get team members of a project', function (done) {
         this.timeout(10000);
         const data = {
-            "projectKey" : "HnaArqQystM8D",
-        }
+            projectKey: project_key,
+        };
+
         localizeService.project.getTeam(data,function(err,result){
             if(err) {
                 console.log('error in getTeamMembers:' + err);
@@ -148,28 +199,12 @@ describe('Localize APIs', () => {
         });
     });
 
-
-    it('getlanguagesList', function (done) {
-        this.timeout(20000);
-        const data = {
-            projectKey:'HnaArqQystM8D'
-        };
-        
-        localizeService.project.languages(data, function(err, result){
-            if(err) {
-                console.log('error in languagesList :' + err);
-            }
-            result.data.languages.should.be.Array();
-            done();
-        });
-    });;
-
-    it('createAPhrase', function (done) {
+    it('Should create a phrase', function (done) {
         this.timeout(10000);
-        data = {
-            projectKey:'HnaArqQystM8D',
-            phraseList:{ phrases: [{ 'phrase': 'phrase4', 'context': 'context' }] }
-        }
+        const data = {
+            projectKey: project_key,
+            phraseList: { phrases: [{ 'phrase': 'phrase4', 'context': 'context' }] }
+        };
 
         localizeService.phrase.create(data, function(err, result){
             if(err) {
@@ -180,14 +215,29 @@ describe('Localize APIs', () => {
         });
     });
 
-    it('getPhrases', function (done) {
+    it('Should fail to create phrase', function (done) {
         this.timeout(10000);
-        data = { 
-            "projectKey" : "HnaArqQystM8D", 
-            "limit":"2",
-            'state':'pending', 
-            "context":"context", 
-        }
+        const data = {
+            projectKey: project_key,
+            phraseList: { phrases: [{}] }
+        };
+
+        localizeService.phrase.create(data, function(err, result){
+            if(err) {
+                err.should.not.be.eql(null);
+            }
+            done();
+        });
+    });
+
+    it('Should get list of phrases', function (done) {
+        this.timeout(10000);
+        const data = { 
+            projectKey: project_key, 
+            limit: '2',
+            state: 'pending', 
+            context: 'context', 
+        };
 
         localizeService.phrase.getAll(data, function(err, result){
             if(err) {
@@ -199,12 +249,29 @@ describe('Localize APIs', () => {
         });
     });
 
-    it('getAPhrase', function (done) {
+    it('Should fail to get list of phrases', function (done) {
         this.timeout(10000);
-        data =  {
-            "projectKey" : "HnaArqQystM8D",
-             "id": projectTestData.phraseId, 
+        const data = { 
+            projectKey: project_key, 
+            limit: '2',
+            state: 'nothing', 
+            context: 'context', 
+        };
+
+        localizeService.phrase.getAll(data, function(err, result){
+            if(err) {
+                err.should.not.be.eql(null);
             }
+            done();
+        });
+    });
+
+    it('Should get a phrase based on id', function (done) {
+        this.timeout(10000);
+        const data = {
+            projectKey: project_key,
+            id: projectTestData.phraseId, 
+        };
 
         localizeService.phrase.getOne(data, function(err, result){
             if(err) {
@@ -215,12 +282,27 @@ describe('Localize APIs', () => {
         });
     });
 
-    it('deleteAPhrase', function (done) {
+    it('Should fail to get a phrase based on id', function (done) {
         this.timeout(10000);
-        data =  { 
-            "projectKey" : "HnaArqQystM8D",
-             "id":projectTestData.phraseId, 
+        const data = {
+            projectKey: project_key,
+            id: '', 
+        };
+
+        localizeService.phrase.getOne(data, function(err, result){
+            if(err) {
+                err.message.should.eql('Invalid input params');
             }
+            done();
+        });
+    });
+
+    it('Should delete a phrase based on id', function (done) {
+        this.timeout(10000);
+        const data = { 
+            projectKey: project_key,
+            id: projectTestData.phraseId, 
+        };
 
         localizeService.phrase.deleteOne(data, function(err, result){
             if(err) {
@@ -231,18 +313,33 @@ describe('Localize APIs', () => {
         });
     });
 
-    it('createATranslation', function (done) {
+    it('Should fail to delete a phrase based on id', function (done) {
         this.timeout(10000);
-        data =  { 
-            "translationDetails": { 
-                "phrase":"5c9c70b24696107ae33830a8",
-                "value":"#Hello, world!",
-                "state":"active",
-                "language":"fr",
-                "comment":"testing"
-             }, 
-             "projectKey":"HnaArqQystM8D" 
+        const data = { 
+            projectKey: project_key,
+            id: '', 
+        };
+
+        localizeService.phrase.deleteOne(data, function(err, result){
+            if(err) {
+                err.message.should.eql('Invalid input params');
             }
+            done();
+        });
+    });
+
+    it('Should create a translation', function (done) {
+        this.timeout(10000);
+        const data = { 
+            translationDetails: { 
+                phrase: projectTestData.phraseId,
+                value: '#Hello, world!',
+                state: 'active',
+                language: 'fr',
+                comment: 'testing',
+            }, 
+             projectKey: project_key, 
+        };
 
         localizeService.translation.create(data, function(err, result){
             if(err) {
@@ -254,12 +351,33 @@ describe('Localize APIs', () => {
         });
     });
 
-    it('getTranslations', function (done) {
+    it('Should fail to create a translation', function (done) {
         this.timeout(10000);
-        data =  { 
-            "language":"fr",
-             "projectKey":"HnaArqQystM8D" 
+        const data = { 
+            translationDetails: { 
+                phrase: projectTestData.phraseId,
+                value: '#Hello, world!',
+                state: 'active',
+                language: '',
+                comment: 'testing',
+            }, 
+             projectKey: project_key, 
+        };
+
+        localizeService.translation.create(data, function(err, result){
+            if(err) {
+                err.should.not.eql(null);
             }
+            done();
+        });
+    });
+
+    it('Should get list of translations', function (done) {
+        this.timeout(10000);
+        const data = { 
+            language: 'fr',
+            projectKey: project_key 
+        };
 
         localizeService.translation.getAll(data, function(err, result){
             if(err) {
@@ -270,13 +388,28 @@ describe('Localize APIs', () => {
         });
     });
 
-    it('getATranslation', function (done) {
+    it('Should fail to get list of translations', function (done) {
         this.timeout(10000);
-        data =  { 
-            "projectKey" : "HnaArqQystM8D",
-             "language":"en" ,
-             "translationId": projectTestData.translationId,
+        const data = { 
+            language: '',
+            projectKey: project_key 
+        };
+
+        localizeService.translation.getAll(data, function(err, result){
+            if(err) {
+                err.message.should.eql('Invalid input params')
             }
+            done();
+        });
+    });
+
+    it('Should get a translation based on id', function (done) {
+        this.timeout(10000);
+        const data = { 
+            projectKey: project_key,
+            language: 'en' ,
+            translationId: projectTestData.translationId,
+        };
 
         localizeService.translation.getOne(data, function(err, result){
             if(err) {
@@ -288,17 +421,33 @@ describe('Localize APIs', () => {
         });
     });
 
-    it('updateATranslation', function (done) {
+    it('Should fail to get a translation based on id', function (done) {
         this.timeout(10000);
-        data = {
-            "projectKey" : "HnaArqQystM8D",
-             "translationId":projectTestData.translationId,
-              "translationDetails" : { 
-                  "value":"nieuwe zin",
-                   "state":"active",
-                    "comment":"testing",
-                }
+        const data = { 
+            projectKey: project_key,
+            language: '' ,
+            translationId: projectTestData.translationId,
+        };
+
+        localizeService.translation.getOne(data, function(err, result){
+            if(err) {
+                err.message.should.eql('Invalid input params');
             }
+            done();
+        });
+    });
+
+    it('Should update a translation based on id', function (done) {
+        this.timeout(10000);
+        const data = {
+            projectKey: project_key,
+            translationId: projectTestData.translationId,
+            translationDetails: { 
+                value: 'nieuwe zin',
+                state: 'active',
+                comment: 'testing',
+            },
+        };
 
         localizeService.translation.update(data, function(err, result){
             if(err) {
@@ -310,12 +459,32 @@ describe('Localize APIs', () => {
         });
     });
 
-    it('deleteATranslation', function (done) {
+    it('Should fail to update a translation based on id', function (done) {
         this.timeout(10000);
-        data = {
-            "projectKey" : "HnaArqQystM8D",
-            "translationId":projectTestData.translationId,
-        }
+        const data = {
+            projectKey: project_key,
+            translationId:'',
+            translationDetails: { 
+                value: 'nieuwe zin',
+                state: 'active',
+                comment: 'testing',
+            },
+        };
+
+        localizeService.translation.update(data, function(err, result){
+            if(err) {
+                err.message.should.eql('Invalid input params');
+            }
+            done();
+        });
+    });
+
+    it('Should delete a translation based on id', function (done) {
+        this.timeout(10000);
+        const data = {
+            projectKey: project_key,
+            translationId: projectTestData.translationId,
+        };
 
         localizeService.translation.deleteOne(data, function(err, result){
             if(err) {
@@ -326,15 +495,30 @@ describe('Localize APIs', () => {
         });
     });
 
-
-    it('translatePhrase', function (done) {
+    it('Should fail to delete a translation based on id', function (done) {
         this.timeout(10000);
         const data = {
-            projectKey:'HnaArqQystM8D',
-            phrase:'This is a sample text',
-            target:'fr',
-            source:'en',
-        }
+            projectKey: project_key,
+            translationId: '',
+        };
+
+        localizeService.translation.deleteOne(data, function(err, result){
+            if(err) {
+                err.message.should.eql('Invalid input params');
+            }
+            done();
+        });
+    });
+
+
+    it('Should translate a given phrase', function (done) {
+        this.timeout(10000);
+        const data = {
+            projectKey: project_key,
+            phrase: 'This is a sample text',
+            target: 'fr',
+            source: 'en',
+        };
         
         localizeService.machine.translate(data, function(err, result){
             if(err) {
@@ -345,18 +529,80 @@ describe('Localize APIs', () => {
         });
     });
 
-    it('detectLanguage', function (done) {
+    it('Should fail to translate a given phrase', function (done) {
         this.timeout(10000);
         const data = {
-            projectKey:'HnaArqQystM8D',
-            phrase:'Ceci est un exemple de texte',
-        }
+            projectKey: project_key,
+            phrase: 'This is a sample text',
+            target: '',
+            source: 'en',
+        };
+        
+        localizeService.machine.translate(data, function(err, result){
+            if(err) {
+                err.message.should.eql('Invalid input params');
+            }
+            done();
+        });
+    });
+
+    it('Should detect language of a given phrase', function (done) {
+        this.timeout(10000);
+        const data = {
+            projectKey: project_key,
+            phrase: 'Ceci est un exemple de texte',
+        };
 
         localizeService.machine.detectLanguage(data, function(err, result){
             if(err) {
                 console.log('error in detectLanguage:' + err);
             }
-            result.data.language.should.eql("fr");
+            result.data.language.should.eql('fr');
+            done();
+        });
+    });
+
+    it('Should fail to detect language of a given phrase', function (done) {
+        this.timeout(10000);
+        const data = {
+            projectKey: project_key,
+            phrase: '',
+        };
+
+        localizeService.machine.detectLanguage(data, function(err, result){
+            if(err) {
+                err.message.should.eql('Invalid input params');
+            }
+            done();
+        });
+    });
+
+    it('Should list supported languages', function (done) {
+        this.timeout(10000);
+        const data = {
+            projectKey: project_key,
+        };
+
+        localizeService.machine.supportedLanguages(data, function(err, result){
+            if(err) {
+                console.log('error in supportedLanguages:' + err);
+            }
+            result.meta.status.should.be.eql(200);
+            result.data.languages.should.be.an.Array();
+            done();
+        });
+    });
+
+    it('Should fail to list supported languages', function (done) {
+        this.timeout(10000);
+        const data = {
+            projectKey: '',
+        };
+
+        localizeService.machine.supportedLanguages(data, function(err, result){
+            if(err) {
+                err.message.should.eql('Invalid input params');
+            }
             done();
         });
     });

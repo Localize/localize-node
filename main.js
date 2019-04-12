@@ -1,6 +1,7 @@
 const _               = require('underscore');
 const request         = require('request');
 const bugsnag         = require('bugsnag');
+const fs              = require('fs');
 
 //GLobals
 var apibase = 'https://api.localizejs.com/v2.0/';
@@ -41,15 +42,13 @@ const createMethod = function(method,apiKey) {
       }
     } else {
       options.headers['content-type'] = 'multipart/form-data';
-      options.headers['transfer-encoding'] = 'chunked';
+      options.headers['transfer-encoding'] = 'chunked';      
       options.formData = {
-        file: {
-          content: data.content,
-          options: {
-            filename: data.name,
-            contentType: data.contentType || 'text/plain',
-          },
-        },
+        content:  fs.createReadStream(data.file),
+        filename: data.filename.toString() || "",
+        contentType: data.contentType.toString() || "",
+        language: data.language.toString() || "",
+        format:data.format.toString() || "",
       };
     }
     return request(options, cb ? globalResponseHandler(options, cb) : undefined);
@@ -299,7 +298,7 @@ module.exports = function(apiKey) {
           done(null, result);
         });
       },
-    }
+    },
 
   }
 }
