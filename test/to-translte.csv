@@ -1,3 +1,2 @@
-"Another MS translate test with a var tag. This time the <var varname=""""></var> attribute has empty quotes after it instead of just an empty variable name attribute like the last attempt.", another translation1,a description1,56bb755f9cf47fbd0ebb8677,,en,fr
-"OK, let's try this embedded variable one more time. I told <var username=""""></var> to get to karate on Monday. This time, we're using Microsoft translate.", another translation1,a description1,56bb755f9cf47fbd0ebb8677,,en,fr
-These phrases should be translated into machine translations using v3 of the Microsoft Translate API., another translation1,a description1,56bb755f9cf47fbd0ebb8677,,en,fr
+"phrase","translation","description","phraseId","labels","url","source-language","target-language"
+"phrase4 test import","frase4 test import","context Translator: google","5eafa6d5a9ce5962c63683f3",,,"en","es"
