@@ -4,7 +4,7 @@ const bugsnag = require('bugsnag');
 const fs = require('fs');
 
 //GLobals
-var apibase = 'http://localhost:8086/v2.0/';
+var apibase = 'https://api.localizejs.com/v2.0/';
 
 // Create api signature
 const createApiSignature = function (apiKey) {
