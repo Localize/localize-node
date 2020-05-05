@@ -1,6 +1,5 @@
 const _ = require('underscore');
 const request = require('request');
-const bugsnag = require('bugsnag');
 const fs = require('fs');
 
 //GLobals
@@ -65,12 +64,6 @@ const globalResponseHandler = function (requestOptions, cb) {
       err += '\n Error Body Response is ' + JSON.stringify(res.body);
     }
     if (err) {
-      bugsnag.notify(new Error(err), {
-        groupingHash: 'localize-service',
-        metadata: {
-          requestOptions,
-        },
-      });
       return cb(err, res.body);
     }
 

@@ -1,10 +1,7 @@
-// const sinon = require('sinon');
 const mocha = require('mocha');
 var describe = mocha.describe
 var it = mocha.it
-let chai = require('chai');
 let should = require('should');
-const fs = require('fs');
 const API_key = 'bdf2f149187f5a48c2ac2515041f6f91';
 const project_key = 'GKmjp5I2kObFE';
 const localizeService = require('../main')(API_key);
