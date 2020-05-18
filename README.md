@@ -8,17 +8,17 @@ Install via [npm](http://npmjs.org/):
 
     npm install localize-services --save
 
-test command:
+Test command:
 
-    Checkout the project and in root folder run 'npm run test'
+    Checkout the project and in the root folder run 'npm run test'
 
-Initialize with your localize keys 
+Initialize with your Localize API key
 
     let localizeService = require('localize-services')(key);
 
 Endpoints
 ----------
-  
+
 - All callbacks are passed an error and response: `callback(err, res)`.
 - Please refer to Localize's [API Docs](https://help.localizejs.com/reference#api-overview) for endpoint details.
 
@@ -28,7 +28,7 @@ Endpoints
             name: 'project1',
             sourceLanguage: 'en',
         }, callback);
-    
+
     Required fields:  name, sourceLanguage       
 
     ---
@@ -56,11 +56,11 @@ Endpoints
 
     ---
 
-    localizeService.phrase.getAll({ 
-            projectKey: <your projectkey>, 
+    localizeService.phrase.getAll({
+            projectKey: <your projectkey>,
             limit: '2',
-            state: 'pending', 
-            context: 'context', 
+            state: 'pending',
+            context: 'context',
         }, callback);
 
     Required fields:  projectKey        
@@ -69,16 +69,16 @@ Endpoints
 
     localizeService.phrase.getOne({
             projectKey: <your projectkey>,
-            id: <phraseId>, 
+            id: <phraseId>,
         }, callback);
 
     Required fields:  projectKey, id        
 
     ---
 
-    localizeService.phrase.deleteOne({ 
+    localizeService.phrase.deleteOne({
             projectKey: <your projectkey>,
-            id: <phraseId>, 
+            id: <phraseId>,
         }, callback);
 
     Required fields:  projectKey, id        
@@ -87,27 +87,27 @@ Endpoints
 
 **localizeServices.labels**
 
-    localizeService.label.create({ 
-            projectKey: <your projectkey>, 
-            name: 'label1,
+    localizeService.label.create({
+            projectKey: <your projectkey>,
+            name: 'label1',
             description: 'test description',
             rules: ['autoapprove', 'neverdeprecate', 'excludeOrderTranslation', 'excludeMachineTranslation'],
-             showInMenu: true,
+            showInMenu: true,
         }, callback);
 
     Required fields:  projectKey, name     
 
     ---
 
-    localizeService.label.getAll({ 
-            projectKey: <your projectkey>, 
+    localizeService.label.getAll({
+            projectKey: <your projectkey>,
         }, callback);
 
     Required fields:  projectKey      
 
     ---
 
-    localizeService.label.getOne({ 
+    localizeService.label.getOne({
             projectKey: <your projectkey>,
             labelId: <labelId>,
         }, callback);
@@ -117,9 +117,9 @@ Endpoints
     ---
 
     localizeService.label.update({
-            projectKey: <your projectkey>, 
+            projectKey: <your projectkey>,
             labelId: <labelId>,
-            name: 'label1,
+            name: 'label1',
             description: 'test description',
             rules: ['autoapprove', 'neverdeprecate', 'excludeOrderTranslation', 'excludeMachineTranslation'],
             showInMenu: true,
@@ -134,38 +134,37 @@ Endpoints
             projectKey: <your projectkey>,
             labelId: <labelId>,
         }, callback);
-    
+
     Required fields:  projectKey, labelId       
 
     ---
 
 **localizeServices.translation**
 
-    localizeService.translation.create({ 
+    localizeService.translation.create({
             phrase: <phraseId>,
             value: '#Hello, world!',
             state: 'active',
             language: 'fr',
             comment: 'testing',
-            projectKey: <your projectkey>, 
+            projectKey: <your projectkey>,
         }, callback);
-    
+
     Required fields: projectKey, value, state, language       
 
     ---
 
-    localizeService.translation.getAll({ 
+    localizeService.translation.getAll({
             language: 'fr',
-            projectKey: <your projectkey>, 
+            projectKey: <your projectkey>,
         }, callback);
 
     Required fields:  projectKey, language     
 
     ---
 
-    localizeService.translation.getOne({ 
+    localizeService.translation.getOne({
             projectKey: <your projectkey>,
-            language: 'en' ,
             translationId: <translationId>,
         }, callback);
 
@@ -181,7 +180,7 @@ Endpoints
             comment: 'testing',
         },
     }, callback);
-   
+
     Required fields:  projectKey, translationId         
 
     ---
@@ -190,7 +189,7 @@ Endpoints
             projectKey: <your projectkey>,
             translationId: <translationId>,
         }, callback);
-    
+
     Required fields: projectKey, translationId       
 
     ---
@@ -207,7 +206,7 @@ Endpoints
 
     Required fields: projectKey, language, format, type, file        
 
-    --- 
+    ---
 
     localizeService.content.export({
             projectKey: <your projectkey>,
@@ -228,7 +227,7 @@ Endpoints
             targetLanguage: 'fr',
             sourceLanguage: 'en',
         }, callback);
- 
+
     Required fields:  projectKey, phrase, targetLanguage        
 
     ---
@@ -236,7 +235,7 @@ Endpoints
             projectKey: <your projectkey>,
             phrase: 'Ceci est un exemple de texte',
         }, callback);
- 
+
     Required fields:  projectKey, phrase        
 
     ---
@@ -244,26 +243,26 @@ Endpoints
     localizeService.machine.supportedLanguages({
             projectKey: <your projectkey>,
         }, callback);
- 
+
     Required fields:  projectKey      
 
     ---
 
 **localizeServices.getTeam**
-    
+
     localizeService.getTeam({
             projectKey: <your projectkey>,
         }, callback);
-   
+
     Required fields:  projectKey       
 
     ---
 **localizeServices.languages**
-            
+
     localizeService.languages({
             code: 'en',
         }, callback);
-   
+
     ---
 
 Contribute

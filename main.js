@@ -155,7 +155,7 @@ module.exports = function (apiKey) {
       // Get a single phrase
       getOne: (data, done) => {
         if (!data.projectKey || !data.id) return done(new Error('Invalid input params'));
-        const endPoint = 'projects/' + data.projectKey + '/phrases';
+        const endPoint = 'projects/' + data.projectKey + '/phrases/' + data.id;
         get(endPoint, data, function (err, result) {
           if (err) return done(err);
           done(null, result);
