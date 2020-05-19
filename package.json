@@ -1,13 +1,24 @@
 {
-  "name": "localize-node",
+  "name": "localizejs",
   "version": "1.0.0",
   "license": "MIT",
-  "description": "A wrapper for Localize public API's",
+  "description": "Localize API for Node.js",
+  "homepage": "https://github.com/localize/localize-node",
   "main": "main.js",
+  "engines": {
+    "node": ">=10.0.0"
+  },
+  "repository": {
+    "type" : "git",
+    "url" : "git@github.com:Localize/localize-services.git"
+  },
   "scripts": {
     "test": "node ./node_modules/mocha/bin/mocha"
   },
-  "author": "",
+  "author": {
+    "name": "LocalizeJS",
+    "url": "https://localizejs.com"
+  },
   "dependencies": {
     "request": "2.88.2",
     "underscore": "1.10.2"
