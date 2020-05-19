@@ -10,7 +10,7 @@
   },
   "repository": {
     "type" : "git",
-    "url" : "git@github.com:Localize/localize-services.git"
+    "url" : "git@github.com:Localize/localize-node.git"
   },
   "scripts": {
     "test": "node ./node_modules/mocha/bin/mocha"
