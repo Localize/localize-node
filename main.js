@@ -2,7 +2,7 @@ const _ = require('underscore');
 const request = require('request');
 const fs = require('fs');
 
-//GLobals
+// Globals
 const apibase = 'https://api.localizejs.com/v2.0/';
 
 // Create api signature
