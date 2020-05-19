@@ -1,4 +1,4 @@
-# localizejs for Node
+# @localize/node
 Wrapper for Localize public API's
 
 Installation
@@ -6,7 +6,7 @@ Installation
 
 Install via [npm](http://npmjs.org/):
 
-    npm install localizejs --save
+    npm install @localize/node --save
 
 Test command:
 
@@ -14,7 +14,7 @@ Test command:
 
 Initialize with your Localize API key
 
-    let localizeService = require('localizejs')(key);
+    let localizeService = require('@localize/node')(key);
 
 Endpoints
 ----------
