@@ -1,7 +1,7 @@
 {
   "name": "localize-node",
   "version": "1.0.0",
-  "license": "ISC",
+  "license": "MIT",
   "description": "A wrapper for Localize public API's",
   "main": "main.js",
   "scripts": {
