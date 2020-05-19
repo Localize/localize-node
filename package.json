@@ -1,15 +1,14 @@
 {
   "name": "localize-services",
   "version": "1.0.0",
+  "license": "ISC",
   "description": "A wrapper for Localize public API's",
   "main": "main.js",
   "scripts": {
     "test": "node ./node_modules/mocha/bin/mocha"
   },
   "author": "",
-  "license": "ISC",
   "dependencies": {
-    "fs": "0.0.1-security",
     "request": "2.88.2",
     "underscore": "1.10.2"
   },

@@ -2,11 +2,11 @@ const _ = require('underscore');
 const request = require('request');
 const fs = require('fs');
 
-//GLobals
-var apibase = 'https://api.localizejs.com/v2.0/';
+// Globals
+const apibase = 'https://api.localizejs.com/v2.0/';
 
 // Create api signature
-const createApiSignature = function (apiKey) {
+const createApiSignature = (apiKey) => {
   return {
     'Authorization': 'Bearer ' + apiKey,
     'tracking-id': Date.now(),
@@ -14,8 +14,8 @@ const createApiSignature = function (apiKey) {
   };
 };
 
-const createMethod = function (method, apiKey) {
-  return function (uri, data, cb) {
+const createMethod = (method, apiKey) => {
+  return (uri, data, cb) => {
     const isFormData = method === 'POST' && data.file;
     const signature = createApiSignature(apiKey);
     const requestUri = apibase + uri;
@@ -51,7 +51,7 @@ const createMethod = function (method, apiKey) {
   };
 };
 
-const globalResponseHandler = function (requestOptions, cb) {
+const globalResponseHandler = (requestOptions, cb) => {
   return function (err, res, body) {
     if (typeof cb !== 'function') return;
     // Catch connection errors
@@ -96,7 +96,7 @@ const globalResponseHandler = function (requestOptions, cb) {
 ////
 
 module.exports = function (apiKey) {
-  var get = createMethod('GET', apiKey),
+  const get = createMethod('GET', apiKey),
     post = createMethod('POST', apiKey),
     put = createMethod('PUT', apiKey),
     deleteCall = createMethod('DELETE', apiKey),
