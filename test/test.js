@@ -2,9 +2,10 @@ const mocha = require('mocha');
 var describe = mocha.describe
 var it = mocha.it
 let should = require('should');
-const API_key = 'bdf2f149187f5a48c2ac2515041f6f91';
-const project_key = 'GKmjp5I2kObFE';
 const localizeService = require('../main')(API_key);
+
+// Tests will fail until we introduce a workflow for accessing
+// ENVs: API_key and project_key
 
 describe('Localize APIs', () => {
     let projectTestData = {
