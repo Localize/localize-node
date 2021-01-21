@@ -10,7 +10,7 @@ Install via [npm](http://npmjs.org/):
 
 Test command:
 
-    Checkout the project and in the root folder run 'npm run test'
+    Checkout the project and in the root folder run 'npm run test'. Please note you will need to include a Localize API key and Localize project key in the 'test.js' file to run the test suite.
 
 Initialize with your Localize API key
 
@@ -20,7 +20,7 @@ Endpoints
 ----------
 
 - All callbacks are passed an error and response: `callback(err, res)`.
-- Please refer to Localize's [API Docs](https://help.localizejs.com/reference#api-overview) for endpoint details.
+- Please refer to Localize's [API Docs](https://help.localizejs.com/reference#api-overview) for the most up-to-date endpoint details.
 
 **localizeServices.project**
 
