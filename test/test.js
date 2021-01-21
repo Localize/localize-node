@@ -2,10 +2,13 @@ const mocha = require('mocha');
 var describe = mocha.describe
 var it = mocha.it
 let should = require('should');
-const localizeService = require('../main')(API_key);
 
-// Tests will fail until we introduce a workflow for accessing
-// ENVs: API_key and project_key
+// In order to run tests you will need to include
+// an API key and a project key below
+const API_key = '';
+const project_key = '';
+
+const localizeService = require('../main')(API_key);
 
 describe('Localize APIs', () => {
     let projectTestData = {
@@ -17,10 +20,10 @@ describe('Localize APIs', () => {
 
     describe('PROJECTS', () => {
         it('Should create a new project', function (done) {
-            this.timeout(10000);
             const data = {
                 name: 'testing1' + new Date().getTime(),
                 sourceLanguage: 'en',
+                type: 'web'
             };
             localizeService.project.create(data, function (err, result) {
                 if (err) {
@@ -33,7 +36,6 @@ describe('Localize APIs', () => {
         });
 
         it('Should fail to create a new project', function (done) {
-            this.timeout(10000);
             const data = {
                 name: 'testing1',
                 sourceLanguage: '',
@@ -47,7 +49,6 @@ describe('Localize APIs', () => {
         });
 
         it('Should get list of projects', function (done) {
-            this.timeout(10000);
             localizeService.project.getAll(function (err, result) {
                 if (err) {
                     console.log('error in get Project:' + err);
@@ -58,7 +59,6 @@ describe('Localize APIs', () => {
         });
 
         it('Should get a single Project', function (done) {
-            this.timeout(10000);
             const data = {
                 projectKey: project_key,
             };
@@ -72,7 +72,6 @@ describe('Localize APIs', () => {
         });
 
         it('Should fail to get projects', function (done) {
-            this.timeout(10000);
             const data = {
                 projectKey: '',
             };
@@ -88,10 +87,10 @@ describe('Localize APIs', () => {
 
     describe('PHRASES', () => {
         it('Should create a phrase', function (done) {
-            this.timeout(10000);
+            const timestamp = new Date().getTime();
             const data = {
                 projectKey: project_key,
-                phrases: [{ 'phrase': 'phrase4', 'context': 'context' }],
+                phrases: [{ 'phrase': 'phrase1' + timestamp, 'context': 'context' }, { 'phrase': 'phrase2' + timestamp, 'context': 'context' }],
             };
 
             localizeService.phrase.create(data, function (err, result) {
@@ -104,7 +103,6 @@ describe('Localize APIs', () => {
         });
 
         it('Should fail to create phrase', function (done) {
-            this.timeout(10000);
             const data = {
                 projectKey: project_key,
                 phrases: [{}],
@@ -119,26 +117,23 @@ describe('Localize APIs', () => {
         });
 
         it('Should get list of phrases', function (done) {
-            this.timeout(10000);
             const data = {
                 projectKey: project_key,
                 limit: '2',
-                state: 'pending',
-                context: 'context',
             };
 
             localizeService.phrase.getAll(data, function (err, result) {
                 if (err) {
                     console.log('error in getPhrases:' + err);
                 }
-                projectTestData.phraseId = result.data.phrases[0].id;
+                projectTestData.phrase1Id = result.data.phrases[0].id;
+                projectTestData.phrase2Id = result.data.phrases[1].id;
                 result.data.phrases.should.be.an.Array();
                 done();
             });
         });
 
         it('Should fail to get list of phrases', function (done) {
-            this.timeout(10000);
             const data = {
                 projectKey: project_key,
                 limit: '2',
@@ -154,41 +149,10 @@ describe('Localize APIs', () => {
             });
         });
 
-        it('Should get a phrase based on id', function (done) {
-            this.timeout(10000);
-            const data = {
-                projectKey: project_key,
-                id: projectTestData.phraseId,
-            };
-
-            localizeService.phrase.getOne(data, function (err, result) {
-                if (err) {
-                    console.log('error in getAPhrase:' + err);
-                }
-                result.data.phrases.should.be.an.Array();
-                done();
-            });
-        });
-
-        it('Should fail to get a phrase based on id', function (done) {
-            this.timeout(10000);
-            const data = {
-                projectKey: project_key,
-                id: '',
-            };
-            localizeService.phrase.getOne(data, function (err, result) {
-                if (err) {
-                    err.message.should.eql('Invalid input params');
-                }
-                done();
-            });
-        });
-
         it('Should delete a phrase based on id', function (done) {
-            this.timeout(10000);
             const data = {
                 projectKey: project_key,
-                id: projectTestData.phraseId,
+                id: projectTestData.phrase1Id,
             };
 
             localizeService.phrase.deleteOne(data, function (err, result) {
@@ -201,7 +165,6 @@ describe('Localize APIs', () => {
         });
 
         it('Should fail to delete a phrase based on id', function (done) {
-            this.timeout(10000);
             const data = {
                 projectKey: project_key,
                 id: '',
@@ -214,10 +177,41 @@ describe('Localize APIs', () => {
                 done();
             });
         });
+
+        it('Should update a phrase based on id', function (done) {
+            const timestamp = new Date().getTime();
+            const data = {
+                projectKey: project_key,
+                phrases: [{
+                  id: projectTestData.phrase2Id,
+                  phrase: 'a test phrase - localize services' + timestamp,
+                }]
+            };
+            localizeService.phrase.update(data, function (err, result) {
+                if (err) {
+                    console.log('error in updatePhrases:' + err);
+                }
+                result.data.phrasesUpdated.should.eql(1);
+                done();
+            });
+        });
+
+        it('Should fail to update a phrase based on phrases', function (done) {
+            const data = {
+                projectKey: project_key,
+                phrases: [{}],
+            };
+            localizeService.phrase.update(data, function (err, result) {
+                if (err) {
+                    err.message.should.eql('Invalid input params');
+                }
+                done();
+            });
+        });
     });
+
     describe('LABELS', () => {
         it('Should create a label', function (done) {
-            this.timeout(10000);
             const data = {
                 projectKey: project_key,
                 name: 'a test label - localize services' + new Date().getTime(),
@@ -235,7 +229,6 @@ describe('Localize APIs', () => {
         });
 
         it('Should fail to create label', function (done) {
-            this.timeout(10000);
             const data = {
                 projectKey: project_key,
                 name: ""
@@ -249,7 +242,6 @@ describe('Localize APIs', () => {
         });
 
         it('Should get list of labels', function (done) {
-            this.timeout(10000);
             const data = {
                 projectKey: project_key,
             };
@@ -264,7 +256,6 @@ describe('Localize APIs', () => {
         });
 
         it('Should fail to get list of labels', function (done) {
-            this.timeout(10000);
             const data = {
                 projectKey: '',
             };
@@ -277,7 +268,6 @@ describe('Localize APIs', () => {
         });
 
         it('Should get a label based on id', function (done) {
-            this.timeout(10000);
             const data = {
                 projectKey: project_key,
                 labelId: projectTestData.labelId,
@@ -292,7 +282,6 @@ describe('Localize APIs', () => {
         });
 
         it('Should fail to get a label based on id', function (done) {
-            this.timeout(10000);
             const data = {
                 projectKey: project_key,
                 labelId: '',
@@ -306,7 +295,6 @@ describe('Localize APIs', () => {
         });
 
         it('Should update a label based on id', function (done) {
-            this.timeout(10000);
             const data = {
                 projectKey: project_key,
                 name: 'a test label - localize services' + new Date().getTime(),
@@ -325,7 +313,6 @@ describe('Localize APIs', () => {
         });
 
         it('Should fail to update a label based on id', function (done) {
-            this.timeout(10000);
             const data = {
                 projectKey: project_key,
                 name: 'a test label - localize services' + new Date().getTime(),
@@ -342,7 +329,6 @@ describe('Localize APIs', () => {
         });
 
         it('Should delete a label based on id', function (done) {
-            this.timeout(10000);
             const data = {
                 projectKey: project_key,
                 labelId: projectTestData.labelId,
@@ -357,7 +343,6 @@ describe('Localize APIs', () => {
         });
 
         it('Should fail to delete a label based on id', function (done) {
-            this.timeout(10000);
             const data = {
                 projectKey: project_key,
                 labelId: '',
@@ -372,12 +357,11 @@ describe('Localize APIs', () => {
     });
     describe('TRANSLATION', () => {
         it('Should create a translation', function (done) {
-            this.timeout(10000);
             const data = {
-                phrase: projectTestData.phraseId,
+                phrase: projectTestData.phrase2Id,
                 value: '#Hello, world!',
                 state: 'active',
-                language: 'es',
+                language: 'zh',
                 comment: 'testing',
                 projectKey: project_key,
             };
@@ -392,9 +376,8 @@ describe('Localize APIs', () => {
         });
 
         it('Should fail to create a translation', function (done) {
-            this.timeout(10000);
             const data = {
-                phrase: projectTestData.phraseId,
+                phrase: projectTestData.phrase2Id,
                 value: '#Hello, world!',
                 state: 'active',
                 language: '',
@@ -410,9 +393,8 @@ describe('Localize APIs', () => {
         });
 
         it('Should get list of translations', function (done) {
-            this.timeout(10000);
             const data = {
-                language: 'fr',
+                language: 'zh',
                 projectKey: project_key,
             };
 
@@ -426,7 +408,6 @@ describe('Localize APIs', () => {
         });
 
         it('Should fail to get list of translations', function (done) {
-            this.timeout(10000);
             const data = {
                 language: '',
                 projectKey: project_key,
@@ -440,10 +421,8 @@ describe('Localize APIs', () => {
         });
 
         it('Should get a translation based on id', function (done) {
-            this.timeout(10000);
             const data = {
                 projectKey: project_key,
-                language: 'en',
                 translationId: projectTestData.translationId,
             };
             localizeService.translation.getOne(data, function (err, result) {
@@ -457,10 +436,8 @@ describe('Localize APIs', () => {
         });
 
         it('Should fail to get a translation based on id', function (done) {
-            this.timeout(10000);
             const data = {
                 projectKey: project_key,
-                language: '',
                 translationId: projectTestData.translationId,
             };
             localizeService.translation.getOne(data, function (err, result) {
@@ -472,11 +449,9 @@ describe('Localize APIs', () => {
         });
 
         it('Should update a translation based on id', function (done) {
-            this.timeout(10000);
             const data = {
                 projectKey: project_key,
                 translationId: projectTestData.translationId,
-                value: 'nieuwe zin',
                 state: 'active',
                 comment: 'testing',
             };
@@ -491,11 +466,9 @@ describe('Localize APIs', () => {
         });
 
         it('Should fail to update a translation based on id', function (done) {
-            this.timeout(10000);
             const data = {
                 projectKey: project_key,
                 translationId: '',
-                value: 'nieuwe zin',
                 state: 'active',
                 comment: 'testing',
             };
@@ -508,7 +481,6 @@ describe('Localize APIs', () => {
         });
 
         it('Should delete a translation based on id', function (done) {
-            this.timeout(10000);
             const data = {
                 projectKey: project_key,
                 translationId: projectTestData.translationId,
@@ -523,7 +495,6 @@ describe('Localize APIs', () => {
         });
 
         it('Should fail to delete a translation based on id', function (done) {
-            this.timeout(10000);
             const data = {
                 projectKey: project_key,
                 translationId: '',
@@ -538,15 +509,15 @@ describe('Localize APIs', () => {
     });
     describe('IMPORT/ EXPORT', () => {
         it('Should import contents from CSV file', function (done) {
-            this.timeout(10000);
             const data = {
                 projectKey: project_key,
-                language: 'es',
-                format: 'CSV',
                 type: 'phrase',
-                file: __dirname + '/to-translte.csv',
+                language: 'zh',
+                format: 'CSV',
+                content: __dirname + '/to-translte.csv',
             };
             localizeService.content.import(data, function (err, result) {
+              console.log('result', result);
                 if (err) {
                     console.log('error in importContent:' + err);
                 }
@@ -557,10 +528,9 @@ describe('Localize APIs', () => {
         });
 
         it('Should fail to import contents from CSV file', function (done) {
-            this.timeout(10000);
             const data = {
                 projectKey: project_key,
-                language: 'fr',
+                language: 'zh',
                 format: '',
                 type: 'glossary',
                 content: __dirname + '/to-translte.csv',
@@ -574,10 +544,9 @@ describe('Localize APIs', () => {
         });
 
         it('Should export contents as JSON', function (done) {
-            this.timeout(10000);
             const data = {
                 projectKey: project_key,
-                language: 'en',
+                language: 'zh',
                 format: 'JSON',
             };
             localizeService.content.export(data, function (err, result) {
@@ -590,7 +559,6 @@ describe('Localize APIs', () => {
         });
 
         it('Should fail to export contents as JSON', function (done) {
-            this.timeout(10000);
             const data = {
                 projectKey: project_key,
                 language: 'en',
@@ -608,24 +576,22 @@ describe('Localize APIs', () => {
 
     describe('MACHINE TRANSLATION', () => {
         it('Should translate a given phrase', function (done) {
-            this.timeout(10000);
             const data = {
                 projectKey: project_key,
                 phrase: 'This is a sample text',
-                targetLanguage: 'fr',
+                targetLanguage: 'zh',
                 sourceLanguage: 'en',
             };
             localizeService.machine.translate(data, function (err, result) {
                 if (err) {
                     console.log('error in translatePhrase:' + err);
                 }
-                result.data.translation.should.eql('Ceci est un exemple de texte');
+                result.data.translation.should.eql('这是一个示例文本');
                 done();
             });
         });
 
         it('Should fail to translate a given phrase', function (done) {
-            this.timeout(10000);
             const data = {
                 projectKey: project_key,
                 phrase: 'This is a sample text',
@@ -642,7 +608,6 @@ describe('Localize APIs', () => {
         });
 
         it('Should detect language of a given phrase', function (done) {
-            this.timeout(10000);
             const data = {
                 projectKey: project_key,
                 phrase: 'Ceci est un exemple de texte',
@@ -658,7 +623,6 @@ describe('Localize APIs', () => {
         });
 
         it('Should fail to detect language of a given phrase', function (done) {
-            this.timeout(10000);
             const data = {
                 projectKey: project_key,
                 phrase: '',
@@ -672,7 +636,6 @@ describe('Localize APIs', () => {
         });
 
         it('Should list supported languages', function (done) {
-            this.timeout(10000);
             const data = {
                 projectKey: project_key,
             };
@@ -687,7 +650,6 @@ describe('Localize APIs', () => {
         });
 
         it('Should list supported languages', function (done) {
-            this.timeout(10000);
             const data = {
                 projectKey: project_key,
                 target: 'es'
@@ -704,7 +666,6 @@ describe('Localize APIs', () => {
         });
 
         it('Should fail to list supported languages', function (done) {
-            this.timeout(10000);
             const data = {
                 projectKey: '',
             };
@@ -718,7 +679,6 @@ describe('Localize APIs', () => {
 
         describe('ORGANIZATION TEAM', () => {
             it('Should get team members of a project', function (done) {
-                this.timeout(10000);
                 const data = {
                     projectKey: project_key,
                 };
@@ -731,7 +691,6 @@ describe('Localize APIs', () => {
                 });
             });
             it('Should fail to get team members of a project without mandatory fields', function (done) {
-                this.timeout(10000);
                 const data = {
                     projectKey: '',
                 };
@@ -745,7 +704,6 @@ describe('Localize APIs', () => {
         });
         describe('SYSTEM', () => {
             it('Should get list of languages', function (done) {
-                this.timeout(10000);
                 const data = {
                 };
                 localizeService.languages(data, function (err, result) {
@@ -757,7 +715,6 @@ describe('Localize APIs', () => {
                 });
             });
             it('Should get list of languages for a valid language code', function (done) {
-                this.timeout(10000);
                 const data = {
                     code: 'en',
                 };
@@ -770,7 +727,6 @@ describe('Localize APIs', () => {
                 });
             });
             it('Should not get list of languages for a invalid language code', function (done) {
-                this.timeout(10000);
                 const data = {
                     code: 'xxx',
                 };

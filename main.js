@@ -16,7 +16,7 @@ const createApiSignature = (apiKey) => {
 
 const createMethod = (method, apiKey) => {
   return (uri, data, cb) => {
-    const isFormData = method === 'POST' && data.file;
+    const isFormData = method === 'POST' && data.content;
     const signature = createApiSignature(apiKey);
     const requestUri = apibase + uri;
     const options = {
@@ -42,9 +42,10 @@ const createMethod = (method, apiKey) => {
     } else {
       options.headers['content-type'] = 'multipart/form-data';
       options.formData = {
-        content: fs.createReadStream(data.file),
+        content: fs.createReadStream(data.content),
         language: data.language.toString() || "",
         format: data.format.toString() || "",
+        type: data.type.toString() || "",
       };
     }
     return request(options, cb ? globalResponseHandler(options, cb) : undefined);
@@ -108,7 +109,7 @@ module.exports = function (apiKey) {
     project: {
       // Create a project
       create: (data, done) => {
-        if (!data.name || !data.sourceLanguage) return done(new Error('Invalid input params'));
+        if (!data.name || !data.sourceLanguage || !data.type) return done(new Error('Invalid input params'));
         const endPoint = 'projects';
         post(endPoint, data, function (err, result) {
           if (err) return done(err);
@@ -152,11 +153,11 @@ module.exports = function (apiKey) {
           done(null, result);
         })
       },
-      // Get a single phrase
-      getOne: (data, done) => {
-        if (!data.projectKey || !data.id) return done(new Error('Invalid input params'));
-        const endPoint = 'projects/' + data.projectKey + '/phrases/' + data.id;
-        get(endPoint, data, function (err, result) {
+      // Update phrase(s)
+      update: (data, done) => {
+        if (!data.projectKey || !data.phrases) return done(new Error('Invalid input params'));
+        const endPoint = 'projects/' + data.projectKey + '/phrases';
+        put(endPoint, data, function (err, result) {
           if (err) return done(err);
           done(null, result);
         })
@@ -269,8 +270,9 @@ module.exports = function (apiKey) {
     content: {
       // Import contents
       import: (data, done) => {
-        if (!data.projectKey || !data.language || !data.format || !data.type || !data.file) return done(new Error('Invalid input params'));
+        if (!data.projectKey || !data.language || !data.format || !data.type || !data.content) return done(new Error('Invalid input params'));
         const endPoint = 'projects/' + data.projectKey + '/resources';
+        console.log('data', data);
         post(endPoint, data, function (err, result) {
           if (err) return done(err);
           done(null, result);

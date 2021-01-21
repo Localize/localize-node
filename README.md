@@ -63,16 +63,16 @@ Endpoints
             context: 'context',
         }, callback);
 
-    Required fields:  projectKey        
+    Required fields:  projectKey   
 
     ---
 
-    localizeService.phrase.getOne({
+    localizeService.phrase.update({
             projectKey: <your projectkey>,
-            id: <phraseId>,
+            phrases: [{ 'phrase': 'phrase1', 'id': <phraseId>, 'context': 'context', 'labels': [] }]
         }, callback);
 
-    Required fields:  projectKey, id        
+    Required fields:  projectKey, phrases    
 
     ---
 
@@ -201,10 +201,10 @@ Endpoints
             language: 'fr',
             format: 'CSV',
             type: 'phrase',
-            file: __dirname + '/to-translte.csv',
+            content: __dirname + '/to-translte.csv',
         }, callback);
 
-    Required fields: projectKey, language, format, type, file        
+    Required fields: projectKey, language, format, type, content        
 
     ---
 
