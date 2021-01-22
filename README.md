@@ -10,7 +10,7 @@ Install via [npm](http://npmjs.org/):
 
 Test command:
 
-    Checkout the project and in the root folder run 'npm run test'
+    Checkout the project and in the root folder run 'npm run test'. Please note you will need to include a Localize API key and Localize project key in the 'test.js' file to run the test suite.
 
 Initialize with your Localize API key
 
@@ -20,16 +20,17 @@ Endpoints
 ----------
 
 - All callbacks are passed an error and response: `callback(err, res)`.
-- Please refer to Localize's [API Docs](https://help.localizejs.com/reference#api-overview) for endpoint details.
+- Please refer to Localize's [API Docs](https://help.localizejs.com/reference#api-overview) for the most up-to-date endpoint details.
 
 **localizeServices.project**
 
     localizeService.project.create({
             name: 'project1',
             sourceLanguage: 'en',
+            type: 'file'
         }, callback);
 
-    Required fields:  name, sourceLanguage       
+    Required fields:  name, sourceLanguage, type (defaults to 'web' if unspecified)
 
     ---
 
@@ -63,16 +64,16 @@ Endpoints
             context: 'context',
         }, callback);
 
-    Required fields:  projectKey        
+    Required fields:  projectKey   
 
     ---
 
-    localizeService.phrase.getOne({
+    localizeService.phrase.update({
             projectKey: <your projectkey>,
-            id: <phraseId>,
+            phrases: [{ 'phrase': 'phrase1', 'id': <phraseId>, 'context': 'context', 'labels': [] }]
         }, callback);
 
-    Required fields:  projectKey, id        
+    Required fields:  projectKey, phrases    
 
     ---
 
@@ -175,7 +176,6 @@ Endpoints
     localizeService.translation.update({
             projectKey: <your projectkey>,
             translationId: <translationId>,
-            value: 'nieuwe zin',
             state: 'active',
             comment: 'testing',
         },
@@ -201,10 +201,10 @@ Endpoints
             language: 'fr',
             format: 'CSV',
             type: 'phrase',
-            file: __dirname + '/to-translte.csv',
+            content: __dirname + '/to-translte.csv',
         }, callback);
 
-    Required fields: projectKey, language, format, type, file        
+    Required fields: projectKey, language, format, type, content        
 
     ---
 
