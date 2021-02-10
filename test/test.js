@@ -23,6 +23,7 @@ describe('Localize APIs', () => {
             const data = {
                 name: 'testing1' + new Date().getTime(),
                 sourceLanguage: 'en',
+                activeLanguages: ['fr'],
                 type: 'web'
             };
             localizeService.project.create(data, function (err, result) {
