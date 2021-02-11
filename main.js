@@ -109,7 +109,7 @@ module.exports = function (apiKey) {
     project: {
       // Create a project
       create: (data, done) => {
-        if (!data.name || !data.sourceLanguage) return done(new Error('Invalid input params'));
+        if (!data.name || !data.sourceLanguage || !data.activeLanguages) return done(new Error('Invalid input params'));
         const endPoint = 'projects';
         post(endPoint, data, function (err, result) {
           if (err) return done(err);
