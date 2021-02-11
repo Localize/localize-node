@@ -27,10 +27,11 @@ Endpoints
     localizeService.project.create({
             name: 'project1',
             sourceLanguage: 'en',
-            type: 'file'
+            type: 'file',
+            activeLanguages: ['fr', 'zh'],
         }, callback);
 
-    Required fields:  name, sourceLanguage, type (defaults to 'web' if unspecified)
+    Required fields:  name, sourceLanguage, type (defaults to 'web' if unspecified), activeLanguages
 
     ---
 
