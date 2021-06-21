@@ -1,6 +1,6 @@
 {
   "name": "@localize/node",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "license": "MIT",
   "description": "Localize API for Node.js",
   "homepage": "https://github.com/localize/localize-node",
@@ -9,8 +9,8 @@
     "node": ">=10.0.0"
   },
   "repository": {
-    "type" : "git",
-    "url" : "git@github.com:Localize/localize-node.git"
+    "type": "git",
+    "url": "git@github.com:Localize/localize-node.git"
   },
   "scripts": {
     "test": "node ./node_modules/mocha/bin/mocha"
@@ -21,10 +21,10 @@
   },
   "dependencies": {
     "request": "2.88.2",
-    "underscore": "1.10.2"
+    "underscore": "1.13.1"
   },
   "devDependencies": {
-    "mocha": "8.2.1",
+    "mocha": "9.0.1",
     "should": "13.2.3"
   }
 }
