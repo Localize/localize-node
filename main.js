@@ -301,7 +301,7 @@ module.exports = function (apiKey) {
       uploadTranslatedDocument: (data, done) => {
         if (!data.projectKey || !data.documentId) return done(new Error('Invalid input params'));
         const endPoint = 'projects/' + data.projectKey + '/documents/' + data.documentId + '/translations';
-        get(endPoint, data, function (err, result) {
+        post(endPoint, data, function (err, result) {
           if (err) return done(err);
           done(null, result);
         })
@@ -334,10 +334,10 @@ module.exports = function (apiKey) {
         })
       },
       // Delete documents
-      deleteDocuments: (data, done) => {
+      deleteOne: (data, done) => {
         if (!data.projectKey || !data.documentId) return done(new Error('Invalid input params'));
         const endPoint = 'projects/' + data.projectKey + '/documents/' + data.documentId;
-        get(endPoint, data, function (err, result) {
+        deleteCall(endPoint, data, function (err, result) {
           if (err) return done(err);
           done(null, result);
         })
