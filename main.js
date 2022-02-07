@@ -287,6 +287,62 @@ module.exports = function (apiKey) {
         })
       },
     },
+    documents: {
+      // Upload source document
+      uploadDocument: (data, done) => {
+        if (!data.projectKey) return done(new Error('Invalid input params'));
+        const endPoint = 'projects/' + data.projectKey + '/documents';
+        post(endPoint, data, function (err, result) {
+          if (err) return done(err);
+          done(null, result);
+        })
+      },
+      // Upload Translated Document
+      uploadTranslatedDocument: (data, done) => {
+        if (!data.projectKey || !data.documentId) return done(new Error('Invalid input params'));
+        const endPoint = 'projects/' + data.projectKey + '/documents/' + data.documentId + '/translations';
+        get(endPoint, data, function (err, result) {
+          if (err) return done(err);
+          done(null, result);
+        })
+      },
+      // Get Document
+      getDocuments: (data, done) => {
+        if (!data.projectKey) return done(new Error('Invalid input params'));
+        const endPoint = 'projects/' + data.projectKey + '/documents';
+        get(endPoint, data, function (err, result) {
+          if (err) return done(err);
+          done(null, result);
+        })
+      },
+      // Get Source Document
+      getSourceDocument: (data, done) => {
+        if (!data.projectKey || !data.documentId) return done(new Error('Invalid input params'));
+        const endPoint = 'projects/' + data.projectKey + '/documents/' + data.documentId + '/download';
+        get(endPoint, data, function (err, result) {
+          if (err) return done(err);
+          done(null, result);
+        })
+      },
+      // Get translated documents
+      getTranslatedDocument: (data, done) => {
+        if (!data.projectKey || !data.documentId || !data.language) return done(new Error('Invalid input params'));
+        const endPoint = 'projects/' + data.projectKey + '/documents/' + data.documentId + '/download' + data.language;
+        get(endPoint, data, function (err, result) {
+          if (err) return done(err);
+          done(null, result);
+        })
+      },
+      // Delete documents
+      deleteDocuments: (data, done) => {
+        if (!data.projectKey || !data.documentId) return done(new Error('Invalid input params'));
+        const endPoint = 'projects/' + data.projectKey + '/documents/' + data.documentId;
+        get(endPoint, data, function (err, result) {
+          if (err) return done(err);
+          done(null, result);
+        })
+      },
+    },
 
     machine: {
       // Translate a phrase
