@@ -579,11 +579,11 @@ describe('Localize APIs', () => {
         it('Should upload source documents', function (done) {
             const data = {
                 projectKey: project_key,
-                fileName: 'uploadDoc',
+                fileName: 'to-translte.csv',
                 language: 'zh',
-                file: __dirname + '/to-translte.csv',
+                content: __dirname + '/to-translte.csv',
             };
-            localizeService.documents.uploadDocument(data, function (err, result) {
+            localizeService.documents.createDocument(data, function (err, result) {
               console.log('result', result);
                 if (err) {
                     console.log('error in upload Document:' + err);
@@ -598,9 +598,9 @@ describe('Localize APIs', () => {
                 projectKey: project_key,
                 fileName: 'uploadDoc',
                 language: '',
-                file: __dirname + '/to-translte.csv',
+                content: __dirname + '/to-translte.csv',
             };
-            localizeService.documents.uploadDocument(data, function (err, result) {
+            localizeService.documents.createDocument(data, function (err, result) {
                 if (err) {
                     err.should.not.be.eql(null);
                 }
@@ -613,10 +613,10 @@ describe('Localize APIs', () => {
                 documentId: projectTestData.documentId,
                 fileName: 'uploadDoc',
                 language: 'zh',
-                file: __dirname + '/to-translte.csv',
+                content: __dirname + '/to-translte.csv',
 
             };
-            localizeService.documents.uploadTranslatedDocument(data, function (err, result) {
+            localizeService.documents.createTranslation(data, function (err, result) {
                 console.log('result', result);
                 if (err) {
                     console.log('error in upload Document:' + err);
@@ -631,10 +631,10 @@ describe('Localize APIs', () => {
                 documentId: projectTestData.documentId,
                 fileName: 'uploadDoc',
                 language: '',
-                file: __dirname + '/to-translte.csv',
+                content: __dirname + '/to-translte.csv',
 
             };
-            localizeService.documents.uploadTranslatedDocument(data, function (err, result) {
+            localizeService.documents.createTranslation(data, function (err, result) {
                 if (err) {
                     err.should.not.be.eql(null);
                 }
@@ -645,11 +645,11 @@ describe('Localize APIs', () => {
             const data = {
                 projectKey: project_key,
             };
-            localizeService.getDocuments(data, function (err, result) {
+            localizeService.documents.getDocuments(data, function (err, result) {
                 if (err) {
                     console.log('error in get Documents:' + err);
                 }
-                result.data.documents.should.be.an.Array();
+                result.data.should.be.an.Array();
                 done();
             });
         });
@@ -657,33 +657,19 @@ describe('Localize APIs', () => {
             const data = {
                 projectKey: '',
             };
-            localizeService.getDocuments(data, function (err, result) {
+            localizeService.documents.getDocuments(data, function (err, result) {
                 if (err) {
                     err.message.should.eql('Invalid input params');
                 }
-                done();
-            });
-        });
-        it('Should get a Source document based on id', function (done) {
-            const data = {
-                projectKey: project_key,
-                documentId: projectTestData.documentId,
-            };
-            localizeService.documents.getSourceDocument(data, function (err, result) {
-                if (err) {
-                    console.log('error in Source document:' + err);
-                }
-                result.meta.status.should.be.eql(200);
-                result.data.documents.should.have.property('id');
                 done();
             });
         });
         it('Should fail to get a translation based on id', function (done) {
             const data = {
                 projectKey: project_key,
-                documentId: projectTestData.documentId,
+                documentId: '',
             };
-            localizeService.documents.getSourceDocument(data, function (err, result) {
+            localizeService.documents.downloadDocument(data, function (err, result) {
                 if (err) {
                     err.message.should.eql('Invalid input params');
                 }
@@ -695,12 +681,11 @@ describe('Localize APIs', () => {
                 projectKey: project_key,
                 documentId: projectTestData.documentId,
             };
-            localizeService.documents.getSourceDocument(data, function (err, result) {
+            localizeService.documents.downloadDocument(data, function (err, result) {
                 if (err) {
                     console.log('error in Source document:' + err);
                 }
-                result.meta.status.should.be.eql(200);
-                result.data.documents.should.have.property('id');
+                result.should.have.property('dictionary')
                 done();
             });
         });
@@ -710,11 +695,11 @@ describe('Localize APIs', () => {
                 projectKey: project_key,
                 documentId: projectTestData.documentId,
             };
-            localizeService.documents.getTranslatedDocument(data, function (err, result) {
+            localizeService.documents.downloadTranslation(data, function (err, result) {
                 if (err) {
                     console.log('error in get a Translated documents:' + err);
                 }
-                result.data.translations.should.be.an.Array();
+                result.should.have.property('dictionary')
                 done();
             });
         });
@@ -724,7 +709,7 @@ describe('Localize APIs', () => {
                 projectKey: project_key,
                 documentId: projectTestData.documentId,
             };
-            localizeService.getTranslatedDocument(data, function (err, result) {
+            localizeService.documents.downloadTranslation(data, function (err, result) {
                 if (err) {
                     err.message.should.eql('Invalid input params');
                 }

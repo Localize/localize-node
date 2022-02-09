@@ -42,10 +42,11 @@ const createMethod = (method, apiKey) => {
     } else {
       options.headers['content-type'] = 'multipart/form-data';
       options.formData = {
-        content: fs.createReadStream(data.content),
-        language: data.language.toString() || "",
-        format: data.format.toString() || "",
-        type: data.type.toString() || "",
+        file: fs.createReadStream(data.content),
+        language: data.language && data.language.toString() || "",
+        fileName: data.fileName && data.fileName.toString() || "",
+        format: data.format && data.format.toString() || "",
+        type: data.type && data.type.toString() || "",
       };
     }
     return request(options, cb ? globalResponseHandler(options, cb) : undefined);
@@ -289,7 +290,7 @@ module.exports = function (apiKey) {
     },
     documents: {
       // Upload source document
-      uploadDocument: (data, done) => {
+      createDocument: (data, done) => {
         if (!data.projectKey) return done(new Error('Invalid input params'));
         const endPoint = 'projects/' + data.projectKey + '/documents';
         post(endPoint, data, function (err, result) {
@@ -298,7 +299,7 @@ module.exports = function (apiKey) {
         })
       },
       // Upload Translated Document
-      uploadTranslatedDocument: (data, done) => {
+      createTranslation: (data, done) => {
         if (!data.projectKey || !data.documentId) return done(new Error('Invalid input params'));
         const endPoint = 'projects/' + data.projectKey + '/documents/' + data.documentId + '/translations';
         post(endPoint, data, function (err, result) {
@@ -316,7 +317,7 @@ module.exports = function (apiKey) {
         })
       },
       // Get Source Document
-      getSourceDocument: (data, done) => {
+      downloadDocument: (data, done) => {
         if (!data.projectKey || !data.documentId) return done(new Error('Invalid input params'));
         const endPoint = 'projects/' + data.projectKey + '/documents/' + data.documentId + '/download';
         get(endPoint, data, function (err, result) {
@@ -325,9 +326,9 @@ module.exports = function (apiKey) {
         })
       },
       // Get translated documents
-      getTranslatedDocument: (data, done) => {
+      downloadTranslation: (data, done) => {
         if (!data.projectKey || !data.documentId || !data.language) return done(new Error('Invalid input params'));
-        const endPoint = 'projects/' + data.projectKey + '/documents/' + data.documentId + '/download' + data.language;
+        const endPoint = 'projects/' + data.projectKey + '/documents/' + data.documentId + '/download/' + data.language;
         get(endPoint, data, function (err, result) {
           if (err) return done(err);
           done(null, result);
