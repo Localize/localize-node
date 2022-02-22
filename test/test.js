@@ -615,7 +615,6 @@ describe('Localize APIs', () => {
 
             };
             localizeService.documents.createTranslation(data, function (err, result) {
-                console.log('result', result);
                 if (err) {
                     console.log('error in upload Document:' + err);
                 }
