@@ -72,7 +72,11 @@ const globalResponseHandler = (requestOptions, cb) => {
     // Try to parse response
     if (body !== Object(body)) {
       try {
-        body = JSON.parse(res.toJSON().body);
+        if(typeof body === 'string') {
+          body = res;
+        } else {
+          body = JSON.parse(res.toJSON().body);
+        }
       } catch (e) {
         return cb('Could not parse response from localize-service: ' + body, null);
       }

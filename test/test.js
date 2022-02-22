@@ -519,7 +519,6 @@ describe('Localize APIs', () => {
                 content: __dirname + '/to-translte.csv',
             };
             localizeService.content.import(data, function (err, result) {
-              console.log('result', result);
                 if (err) {
                     console.log('error in importContent:' + err);
                 }
@@ -584,7 +583,6 @@ describe('Localize APIs', () => {
                 content: __dirname + '/to-translte.csv',
             };
             localizeService.documents.createDocument(data, function (err, result) {
-              console.log('result', result);
                 if (err) {
                     console.log('error in upload Document:' + err);
                 }
@@ -685,7 +683,7 @@ describe('Localize APIs', () => {
                 if (err) {
                     console.log('error in Source document:' + err);
                 }
-                result.should.have.property('dictionary')
+                result.should.not.be.empty;
                 done();
             });
         });
@@ -699,11 +697,11 @@ describe('Localize APIs', () => {
                 if (err) {
                     console.log('error in get a Translated documents:' + err);
                 }
-                result.should.have.property('dictionary')
+                result.should.not.be.empty;
                 done();
             });
         });
-        it('Should Get a translated document', function (done) {
+        it('Should fail get a translated document', function (done) {
             const data = {
                 language: '',
                 projectKey: project_key,
@@ -730,10 +728,10 @@ describe('Localize APIs', () => {
             });
         });
 
-        it('Should fail to delete a label based on id', function (done) {
+        it('Should fail to delete a documents based on id', function (done) {
             const data = {
                 projectKey: project_key,
-                labelId: '',
+                documentId: '',
             };
             localizeService.documents.deleteOne(data, function (err, result) {
                 if (err) {
