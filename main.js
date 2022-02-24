@@ -19,11 +19,15 @@ const createMethod = (method, apiKey) => {
     const isFormData = method === 'POST' && data.content;
     const signature = createApiSignature(apiKey);
     const requestUri = apibase + uri;
+    let parseChecker = false;
+    let uploadDocument = false;
     const options = {
       method: method,
       uri: requestUri,
       headers: signature,
     };
+    if(uri.indexOf('download') > -1) parseChecker = true;
+    if(uri.indexOf('documents') > -1) uploadDocument = true;
 
     if (!isFormData) {
       if (typeof data === 'function') {
@@ -41,19 +45,28 @@ const createMethod = (method, apiKey) => {
       }
     } else {
       options.headers['content-type'] = 'multipart/form-data';
-      options.formData = {
-        file: fs.createReadStream(data.content),
-        language: data.language && data.language.toString() || "",
-        fileName: data.fileName && data.fileName.toString() || "",
-        format: data.format && data.format.toString() || "",
-        type: data.type && data.type.toString() || "",
-      };
+      if(uploadDocument) {
+        options.formData = {
+          file: fs.createReadStream(data.content),
+          language: data.language && data.language.toString() || "",
+          fileName: data.fileName && data.fileName.toString() || "",
+          format: data.format && data.format.toString() || "",
+          type: data.type && data.type.toString() || "",
+        };
+      } else {
+        options.formData = {
+          content: fs.createReadStream(data.content),
+          language: data.language.toString() || "",
+          format: data.format.toString() || "",
+          type: data.type.toString() || "",
+        };
+      }
     }
-    return request(options, cb ? globalResponseHandler(options, cb) : undefined);
+    return request(options, cb ? globalResponseHandler(parseChecker, options, cb) : undefined);
   };
 };
 
-const globalResponseHandler = (requestOptions, cb) => {
+const globalResponseHandler = (parseChecker, requestOptions, cb) => {
   return function (err, res, body) {
     if (typeof cb !== 'function') return;
     // Catch connection errors
@@ -68,16 +81,16 @@ const globalResponseHandler = (requestOptions, cb) => {
     if (err) {
       return cb(err, res.body);
     }
-
     // Try to parse response
     if (body !== Object(body)) {
       try {
-        if(typeof body === 'string') {
-          body = res;
-        } else {
-          body = JSON.parse(res.toJSON().body);
-        }
+        body = JSON.parse(res.toJSON().body);
       } catch (e) {
+        if (typeof body === 'string' && parseChecker) {
+          body = res.body;
+          cb(null, body);
+          return
+        }
         return cb('Could not parse response from localize-service: ' + body, null);
       }
     }
