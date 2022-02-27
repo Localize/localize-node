@@ -594,17 +594,15 @@ describe('Localize APIs', () => {
         it('Should fail to upload documents from CSV file', function (done) {
             const data = {
                 projectKey: project_key,
-                fileName: 'uploadDoc',
                 language: '',
                 content: __dirname + '/to-translte.csv',
             };
             localizeService.documents.createDocument(data, function (err, result) {
-                if (err) {
-                    err.should.not.be.eql(null);
-                }
+                err.should.not.be.eql(null);
                 done();
             });
         });
+
         it('Should Upload a translated document', function (done) {
             const data = {
                 projectKey: project_key,
@@ -632,9 +630,7 @@ describe('Localize APIs', () => {
 
             };
             localizeService.documents.createTranslation(data, function (err, result) {
-                if (err) {
-                    err.should.not.be.eql(null);
-                }
+                err.should.not.be.eql(null);
                 done();
             });
         });
@@ -655,21 +651,18 @@ describe('Localize APIs', () => {
                 projectKey: '',
             };
             localizeService.documents.getDocuments(data, function (err, result) {
-                if (err) {
-                    err.message.should.eql('Invalid input params');
-                }
+                err.message.should.eql('Invalid input params');
                 done();
             });
         });
+
         it('Should fail to get a translation based on id', function (done) {
             const data = {
                 projectKey: project_key,
                 documentId: '',
             };
             localizeService.documents.downloadDocument(data, function (err, result) {
-                if (err) {
-                    err.message.should.eql('Invalid input params');
-                }
+                err.message.should.eql('Invalid input params');
                 done();
             });
         });
@@ -707,9 +700,7 @@ describe('Localize APIs', () => {
                 documentId: projectTestData.documentId,
             };
             localizeService.documents.downloadTranslation(data, function (err, result) {
-                if (err) {
-                    err.message.should.eql('Invalid input params');
-                }
+                err.message.should.eql('Invalid input params');
                 done();
             });
         });
@@ -733,9 +724,7 @@ describe('Localize APIs', () => {
                 documentId: '',
             };
             localizeService.documents.deleteOne(data, function (err, result) {
-                if (err) {
-                    err.message.should.eql('Invalid input params');
-                }
+                err.message.should.eql('Invalid input params');
                 done();
             });
         });  
