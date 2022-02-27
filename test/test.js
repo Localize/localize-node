@@ -43,9 +43,7 @@ describe('Localize APIs', () => {
                 sourceLanguage: '',
             };
             localizeService.project.create(data, function (err, result) {
-                if (err) {
-                    err.should.not.be.eql(null);
-                }
+                err.should.not.be.eql(null);
                 done();
             });
         });
@@ -111,9 +109,7 @@ describe('Localize APIs', () => {
             };
 
             localizeService.phrase.create(data, function (err, result) {
-                if (err) {
-                    err.should.not.be.eql(null);
-                }
+                result.data.errors.length.should.eql(1);
                 done();
             });
         });
@@ -144,9 +140,7 @@ describe('Localize APIs', () => {
             };
 
             localizeService.phrase.getAll(data, function (err, result) {
-                if (err) {
-                    err.should.not.be.eql(null);
-                }
+                err.should.not.be.eql(null);
                 done();
             });
         });
@@ -236,9 +230,7 @@ describe('Localize APIs', () => {
                 name: ""
             };
             localizeService.label.create(data, function (err, result) {
-                if (err) {
-                    err.should.not.be.eql(null);
-                }
+                err.should.not.be.eql(null);
                 done();
             });
         });
@@ -262,9 +254,7 @@ describe('Localize APIs', () => {
                 projectKey: '',
             };
             localizeService.label.getAll(data, function (err, result) {
-                if (err) {
-                    err.should.not.be.eql(null);
-                }
+                err.should.not.be.eql(null);
                 done();
             });
         });
@@ -289,9 +279,7 @@ describe('Localize APIs', () => {
                 labelId: '',
             };
             localizeService.label.getOne(data, function (err, result) {
-                if (err) {
-                    err.message.should.eql('Invalid input params');
-                }
+                err.message.should.eql('Invalid input params');
                 done();
             });
         });
@@ -323,9 +311,7 @@ describe('Localize APIs', () => {
                 labelId: '',
             };
             localizeService.label.update(data, function (err, result) {
-                if (err) {
-                    err.message.should.eql('Invalid input params');
-                }
+                err.message.should.eql('Invalid input params');
                 done();
             });
         });
@@ -350,9 +336,7 @@ describe('Localize APIs', () => {
                 labelId: '',
             };
             localizeService.label.deleteOne(data, function (err, result) {
-                if (err) {
-                    err.message.should.eql('Invalid input params');
-                }
+                err.message.should.eql('Invalid input params');
                 done();
             });
         });
@@ -387,9 +371,7 @@ describe('Localize APIs', () => {
                 projectKey: project_key,
             };
             localizeService.translation.create(data, function (err, result) {
-                if (err) {
-                    err.should.not.eql(null);
-                }
+                err.should.not.eql(null);
                 done();
             });
         });
@@ -415,9 +397,7 @@ describe('Localize APIs', () => {
                 projectKey: project_key,
             };
             localizeService.translation.getAll(data, function (err, result) {
-                if (err) {
-                    err.message.should.eql('Invalid input params')
-                }
+                err.message.should.eql('Invalid input params')
                 done();
             });
         });
@@ -440,12 +420,10 @@ describe('Localize APIs', () => {
         it('Should fail to get a translation based on id', function (done) {
             const data = {
                 projectKey: project_key,
-                translationId: projectTestData.translationId,
+                translationId: '',
             };
             localizeService.translation.getOne(data, function (err, result) {
-                if (err) {
-                    err.message.should.eql('Invalid input params');
-                }
+                err.message.should.eql('Invalid input params');
                 done();
             });
         });
@@ -462,7 +440,7 @@ describe('Localize APIs', () => {
                     console.log('error in updateATranslation:' + err);
                 }
                 result.meta.status.should.be.eql(200);
-                result.data.translation.should.have.property('id');
+                result.data.translation.should.have.property('_id');
                 done();
             });
         });
@@ -475,9 +453,7 @@ describe('Localize APIs', () => {
                 comment: 'testing',
             };
             localizeService.translation.update(data, function (err, result) {
-                if (err) {
-                    err.message.should.eql('Invalid input params');
-                }
+                err.message.should.eql('Invalid input params');
                 done();
             });
         });
@@ -537,9 +513,7 @@ describe('Localize APIs', () => {
                 content: __dirname + '/to-translte.csv',
             };
             localizeService.content.import(data, function (err, result) {
-                if (err) {
-                    err.should.not.be.eql(null);
-                }
+                err.should.not.be.eql(null);
                 done();
             });
         });
@@ -567,9 +541,7 @@ describe('Localize APIs', () => {
                 context: 'An active phrase context',
             };
             localizeService.content.export(data, function (err, result) {
-                if (err) {
-                    err.should.not.be.eql(null);
-                }
+                err.should.not.be.eql(null);
                 done();
             });
         });
@@ -756,9 +728,7 @@ describe('Localize APIs', () => {
             };
 
             localizeService.machine.translate(data, function (err, result) {
-                if (err) {
-                    err.message.should.eql('Invalid input params');
-                }
+                err.message.should.eql('Invalid input params');
                 done();
             });
         });
@@ -784,9 +754,7 @@ describe('Localize APIs', () => {
                 phrase: '',
             };
             localizeService.machine.detectLanguage(data, function (err, result) {
-                if (err) {
-                    err.message.should.eql('Invalid input params');
-                }
+                err.message.should.eql('Invalid input params');
                 done();
             });
         });
@@ -826,9 +794,7 @@ describe('Localize APIs', () => {
                 projectKey: '',
             };
             localizeService.machine.supportedLanguages(data, function (err, result) {
-                if (err) {
-                    err.message.should.eql('Invalid input params');
-                }
+                err.message.should.eql('Invalid input params');
                 done();
             });
         });
