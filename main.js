@@ -3,7 +3,7 @@ const request = require('request');
 const fs = require('fs');
 
 // Globals
-const apibase = 'http://localhost:8086/v2.0/';
+const apibase = 'https://api.localizejs.com/v2.0/';
 
 // Create api signature
 const createApiSignature = (apiKey) => {
