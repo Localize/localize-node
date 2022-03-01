@@ -19,11 +19,15 @@ const createMethod = (method, apiKey) => {
     const isFormData = method === 'POST' && data.content;
     const signature = createApiSignature(apiKey);
     const requestUri = apibase + uri;
+
     const options = {
       method: method,
       uri: requestUri,
       headers: signature,
     };
+
+    let parseResponse = uri.indexOf('download') === -1;
+    let uploadDocument = uri.indexOf('documents') > -1;
 
     if (!isFormData) {
       if (typeof data === 'function') {
@@ -42,17 +46,22 @@ const createMethod = (method, apiKey) => {
     } else {
       options.headers['content-type'] = 'multipart/form-data';
       options.formData = {
-        content: fs.createReadStream(data.content),
-        language: data.language.toString() || "",
-        format: data.format.toString() || "",
-        type: data.type.toString() || "",
-      };
+        language: data.language && data.language.toString() || "",
+        fileName: data.fileName && data.fileName.toString() || "",
+        format: data.format && data.format.toString() || "",
+        type: data.type && data.type.toString() || "",
+      }
+      if(uploadDocument) {
+        options.formData['file'] = fs.createReadStream(data.content);
+      } else {
+        options.formData['content'] = fs.createReadStream(data.content);
+      }
     }
-    return request(options, cb ? globalResponseHandler(options, cb) : undefined);
+    return request(options, cb ? globalResponseHandler(parseResponse, options, cb) : undefined);
   };
 };
 
-const globalResponseHandler = (requestOptions, cb) => {
+const globalResponseHandler = (parseResponse, requestOptions, cb) => {
   return function (err, res, body) {
     if (typeof cb !== 'function') return;
     // Catch connection errors
@@ -67,9 +76,15 @@ const globalResponseHandler = (requestOptions, cb) => {
     if (err) {
       return cb(err, res.body);
     }
-
+    
     // Try to parse response
     if (body !== Object(body)) {
+      if (!parseResponse) {
+        body = res.body;
+        cb(null, body);
+        return
+      }
+
       try {
         body = JSON.parse(res.toJSON().body);
       } catch (e) {
@@ -282,6 +297,62 @@ module.exports = function (apiKey) {
         if (!data.projectKey || !data.language || !data.format) return done(new Error('Invalid input params'));
         const endPoint = 'projects/' + data.projectKey + '/resources';
         get(endPoint, data, function (err, result) {
+          if (err) return done(err);
+          done(null, result);
+        })
+      },
+    },
+    documents: {
+      // Upload source document
+      createDocument: (data, done) => {
+        if (!data.projectKey) return done(new Error('Invalid input params'));
+        const endPoint = 'projects/' + data.projectKey + '/documents';
+        post(endPoint, data, function (err, result) {
+          if (err) return done(err);
+          done(null, result);
+        })
+      },
+      // Upload Translated Document
+      createTranslation: (data, done) => {
+        if (!data.projectKey || !data.documentId) return done(new Error('Invalid input params'));
+        const endPoint = 'projects/' + data.projectKey + '/documents/' + data.documentId + '/translations';
+        post(endPoint, data, function (err, result) {
+          if (err) return done(err);
+          done(null, result);
+        })
+      },
+      // Get Document
+      getDocuments: (data, done) => {
+        if (!data.projectKey) return done(new Error('Invalid input params'));
+        const endPoint = 'projects/' + data.projectKey + '/documents';
+        get(endPoint, data, function (err, result) {
+          if (err) return done(err);
+          done(null, result);
+        })
+      },
+      // Get Source Document
+      downloadDocument: (data, done) => {
+        if (!data.projectKey || !data.documentId) return done(new Error('Invalid input params'));
+        const endPoint = 'projects/' + data.projectKey + '/documents/' + data.documentId + '/download';
+        get(endPoint, data, function (err, result) {
+          if (err) return done(err);
+          done(null, result);
+        })
+      },
+      // Get translated documents
+      downloadTranslation: (data, done) => {
+        if (!data.projectKey || !data.documentId || !data.language) return done(new Error('Invalid input params'));
+        const endPoint = 'projects/' + data.projectKey + '/documents/' + data.documentId + '/download/' + data.language;
+        get(endPoint, data, function (err, result) {
+          if (err) return done(err);
+          done(null, result);
+        })
+      },
+      // Delete documents
+      deleteOne: (data, done) => {
+        if (!data.projectKey || !data.documentId) return done(new Error('Invalid input params'));
+        const endPoint = 'projects/' + data.projectKey + '/documents/' + data.documentId;
+        deleteCall(endPoint, data, function (err, result) {
           if (err) return done(err);
           done(null, result);
         })

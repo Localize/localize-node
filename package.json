@@ -13,7 +13,7 @@
     "url": "git@github.com:Localize/localize-node.git"
   },
   "scripts": {
-    "test": "node ./node_modules/mocha/bin/mocha"
+    "test": "node ./node_modules/mocha/bin/mocha --timeout 10000"
   },
   "author": {
     "name": "LocalizeJS",
