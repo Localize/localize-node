@@ -265,6 +265,59 @@ Endpoints
         }, callback);
 
     ---
+**localizeServices.documents**
+
+    localizeService.documents.createDocument({
+        projectKey: <your projectkey>,
+    }, callback);
+    
+    Required fields:  projectKey 
+
+    ---
+    
+    localizeService.documents.createTranslation({
+        projectKey: <your projectkey>,
+    }, callback);
+    
+    Required fields:  projectKey 
+
+    ---
+ 
+    localizeService.documents.getDocuments({
+        projectKey: <your projectkey>,
+    }, callback);
+    
+    Required fields:  projectKey    
+    
+    ---
+   
+    localizeService.documents.downloadDocument({
+        projectKey: <your projectkey>,
+        documentId: <your documentId>,
+    }, callback);
+    
+    Required fields:  projectKey, documentId
+    
+    ---
+    
+    localizeService.documents.downloadTranslation({
+        projectKey: <your projectkey>,
+        documentId: <your documentId>,
+        language: 'fr',
+    }, callback);
+    
+    Required fields:  projectKey, documentId, language
+    
+    ---
+    
+    localizeService.documents.deleteOne({
+        projectKey: <your projectkey>,
+        documentId: <your documentId>,
+    }, callback);
+    
+    Required fields:  projectKey, documentId   
+      
+    ---
 
 Contribute
 ----------
