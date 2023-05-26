@@ -1,9 +1,10 @@
 const _ = require('underscore');
 const axios = require('axios');
 const fs = require('fs');
+const FormData = require('form-data');
 
 // Globals
-const apibase = 'http://localhost:8086/v2.0/';
+const apibase = 'https://api.localizejs.com/v2.0/';
 
 // Create api signature
 const createApiSignature = (apiKey) => {
@@ -51,42 +52,39 @@ const createMethod = (method, apiKey) => {
       formData.append('fileName', data.fileName && data.fileName.toString() || "");
       formData.append('format', data.format && data.format.toString() || "");
       formData.append('type', data.type && data.type.toString() || "");
-      // options.formData = {
-      //   language: data.language && data.language.toString() || "",
-      //   fileName: data.fileName && data.fileName.toString() || "",
-      //   format: data.format && data.format.toString() || "",
-      //   type: data.type && data.type.toString() || "",
-      // }
-      if(uploadDocument) {
+
+      if (uploadDocument) {
         formData.append('file', fs.createReadStream(data.content));
-        // options.formData['file'] = fs.createReadStream(data.content);
       } else {
         formData.append('content', fs.createReadStream(data.content));
-        // options.formData['content'] = fs.createReadStream(data.content);
       }
       options.data = formData;
     }
-console.log(options)
-    axios(options)
-  .then(function (response) {
-    console.log(response, cb, parseResponse);
-    // resolve(response.data)
-    // handle success
-    // cb ? globalResponseHandler(parseResponse, options, cb) : undefined
-    cb(null, response.data);
-  })
-  .catch(function (error) {
-    // handle error
-    console.log(error.response.data, 'asaasa');
-  })
 
-    // return axios(options, cb ? globalResponseHandler(parseResponse, options, cb) : undefined);
+    axios(options)
+      .then(function (response) {
+        cb(null, response.data);
+      })
+      .catch(function (error) {
+
+        let errorMessage;
+
+        if (error && error.response.data && error.response.data.meta.status !== 200) {
+          errorMessage = 'Something went wrong. localize-service responded with a ' + error.response.data.meta.status;
+          errorMessage += '\n Error Body Response is ' + error.response.data.meta.error.message;
+        } else {
+          // Catch connection errors
+          let returnErr = 'Error connecting to localize-service';
+          if (error) returnErr += ': ' + error.response.data.meta.status;
+          errorMessage = returnErr;
+        }
+        cb(errorMessage, error.response.data);
+      })
   };
 };
 
 const globalResponseHandler = (parseResponse, requestOptions, cb) => {
   return function (err, res, body) {
-    console.log(body, 'sddssddssdqqwwwqqwwq');
     if (typeof cb !== 'function') return;
     // Catch connection errors
     if (err || !res) {
@@ -100,7 +98,7 @@ const globalResponseHandler = (parseResponse, requestOptions, cb) => {
     if (err) {
       return cb(err, res.body);
     }
-    
+
     // Try to parse response
     if (body !== Object(body)) {
       if (!parseResponse) {
@@ -148,7 +146,6 @@ module.exports = function (apiKey) {
     project: {
       // Create a project
       create: (data, done) => {
-        console.log(data, 'sdsdsdsd')
         if (!data.name || !data.sourceLanguage || !data.activeLanguages) return done(new Error('Invalid input params'));
         const endPoint = 'projects';
         post(endPoint, data, function (err, result) {
