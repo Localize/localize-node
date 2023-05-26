@@ -1,9 +1,9 @@
 const _ = require('underscore');
-const request = require('request');
+const axios = require('axios');
 const fs = require('fs');
 
 // Globals
-const apibase = 'https://api.localizejs.com/v2.0/';
+const apibase = 'http://localhost:8086/v2.0/';
 
 // Create api signature
 const createApiSignature = (apiKey) => {
@@ -22,7 +22,7 @@ const createMethod = (method, apiKey) => {
 
     const options = {
       method: method,
-      uri: requestUri,
+      url: requestUri,
       headers: signature,
     };
 
@@ -39,30 +39,54 @@ const createMethod = (method, apiKey) => {
 
       // Add data to request
       if (method === 'GET' || method === 'DELETE') {
-        options.qs = data || {};
+        options.data = data || {};
       } else {
-        options.json = data || {};
+        options.data = data || {};
       }
     } else {
       options.headers['content-type'] = 'multipart/form-data';
-      options.formData = {
-        language: data.language && data.language.toString() || "",
-        fileName: data.fileName && data.fileName.toString() || "",
-        format: data.format && data.format.toString() || "",
-        type: data.type && data.type.toString() || "",
-      }
+
+      const formData = new FormData();
+      formData.append('language', data.language && data.language.toString() || "");
+      formData.append('fileName', data.fileName && data.fileName.toString() || "");
+      formData.append('format', data.format && data.format.toString() || "");
+      formData.append('type', data.type && data.type.toString() || "");
+      // options.formData = {
+      //   language: data.language && data.language.toString() || "",
+      //   fileName: data.fileName && data.fileName.toString() || "",
+      //   format: data.format && data.format.toString() || "",
+      //   type: data.type && data.type.toString() || "",
+      // }
       if(uploadDocument) {
-        options.formData['file'] = fs.createReadStream(data.content);
+        formData.append('file', fs.createReadStream(data.content));
+        // options.formData['file'] = fs.createReadStream(data.content);
       } else {
-        options.formData['content'] = fs.createReadStream(data.content);
+        formData.append('content', fs.createReadStream(data.content));
+        // options.formData['content'] = fs.createReadStream(data.content);
       }
+      options.data = formData;
     }
-    return request(options, cb ? globalResponseHandler(parseResponse, options, cb) : undefined);
+console.log(options)
+    axios(options)
+  .then(function (response) {
+    console.log(response, cb, parseResponse);
+    // resolve(response.data)
+    // handle success
+    // cb ? globalResponseHandler(parseResponse, options, cb) : undefined
+    cb(null, response.data);
+  })
+  .catch(function (error) {
+    // handle error
+    console.log(error.response.data, 'asaasa');
+  })
+
+    // return axios(options, cb ? globalResponseHandler(parseResponse, options, cb) : undefined);
   };
 };
 
 const globalResponseHandler = (parseResponse, requestOptions, cb) => {
   return function (err, res, body) {
+    console.log(body, 'sddssddssdqqwwwqqwwq');
     if (typeof cb !== 'function') return;
     // Catch connection errors
     if (err || !res) {
@@ -124,6 +148,7 @@ module.exports = function (apiKey) {
     project: {
       // Create a project
       create: (data, done) => {
+        console.log(data, 'sdsdsdsd')
         if (!data.name || !data.sourceLanguage || !data.activeLanguages) return done(new Error('Invalid input params'));
         const endPoint = 'projects';
         post(endPoint, data, function (err, result) {

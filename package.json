@@ -20,7 +20,8 @@
     "url": "https://localizejs.com"
   },
   "dependencies": {
-    "request": "2.88.2",
+    "@localize/node": "^1.2.0",
+    "axios": "1.4.0",
     "underscore": "1.13.1"
   },
   "devDependencies": {
