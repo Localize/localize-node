@@ -39,11 +39,7 @@ const createMethod = (method, apiKey) => {
       }
 
       // Add data to request
-      if (method === 'GET' || method === 'DELETE') {
-        options.data = data || {};
-      } else {
-        options.data = data || {};
-      }
+      options.data = data || {};
     } else {
       options.headers['content-type'] = 'multipart/form-data';
 
@@ -80,51 +76,6 @@ const createMethod = (method, apiKey) => {
         }
         cb(errorMessage, error.response.data);
       })
-  };
-};
-
-const globalResponseHandler = (parseResponse, requestOptions, cb) => {
-  return function (err, res, body) {
-    if (typeof cb !== 'function') return;
-    // Catch connection errors
-    if (err || !res) {
-      let returnErr = 'Error connecting to localize-service';
-      if (err) returnErr += ': ' + err.code;
-      err = returnErr;
-    } else if (res.statusCode !== 200) {
-      err = 'Something went wrong. localize-service responded with a ' + res.statusCode;
-      err += '\n Error Body Response is ' + JSON.stringify(res.body);
-    }
-    if (err) {
-      return cb(err, res.body);
-    }
-
-    // Try to parse response
-    if (body !== Object(body)) {
-      if (!parseResponse) {
-        body = res.body;
-        cb(null, body);
-        return
-      }
-
-      try {
-        body = JSON.parse(res.toJSON().body);
-      } catch (e) {
-        return cb('Could not parse response from localize-service: ' + body, null);
-      }
-    }
-
-    // Check for error returned in a 200 response
-    if (body.opstat === 'error') {
-      if (body.err) return cb(body.err);
-      return cb(err);
-    }
-
-    // Make sure response is OK
-    if (body['tracking-id']) body = body.response;
-
-    // Return response
-    cb(null, body);
   };
 };
 
