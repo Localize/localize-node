@@ -1,6 +1,7 @@
 const _ = require('underscore');
-const request = require('request');
+const axios = require('axios');
 const fs = require('fs');
+const FormData = require('form-data');
 
 // Globals
 const apibase = 'https://api.localizejs.com/v2.0/';
@@ -22,7 +23,7 @@ const createMethod = (method, apiKey) => {
 
     const options = {
       method: method,
-      uri: requestUri,
+      url: requestUri,
       headers: signature,
     };
 
@@ -38,71 +39,43 @@ const createMethod = (method, apiKey) => {
       }
 
       // Add data to request
-      if (method === 'GET' || method === 'DELETE') {
-        options.qs = data || {};
-      } else {
-        options.json = data || {};
-      }
+      options.data = data || {};
     } else {
       options.headers['content-type'] = 'multipart/form-data';
-      options.formData = {
-        language: data.language && data.language.toString() || "",
-        fileName: data.fileName && data.fileName.toString() || "",
-        format: data.format && data.format.toString() || "",
-        type: data.type && data.type.toString() || "",
-      }
-      if(uploadDocument) {
-        options.formData['file'] = fs.createReadStream(data.content);
+
+      const formData = new FormData();
+      formData.append('language', data.language && data.language.toString() || "");
+      formData.append('fileName', data.fileName && data.fileName.toString() || "");
+      formData.append('format', data.format && data.format.toString() || "");
+      formData.append('type', data.type && data.type.toString() || "");
+
+      if (uploadDocument) {
+        formData.append('file', fs.createReadStream(data.content));
       } else {
-        options.formData['content'] = fs.createReadStream(data.content);
+        formData.append('content', fs.createReadStream(data.content));
       }
-    }
-    return request(options, cb ? globalResponseHandler(parseResponse, options, cb) : undefined);
-  };
-};
-
-const globalResponseHandler = (parseResponse, requestOptions, cb) => {
-  return function (err, res, body) {
-    if (typeof cb !== 'function') return;
-    // Catch connection errors
-    if (err || !res) {
-      let returnErr = 'Error connecting to localize-service';
-      if (err) returnErr += ': ' + err.code;
-      err = returnErr;
-    } else if (res.statusCode !== 200) {
-      err = 'Something went wrong. localize-service responded with a ' + res.statusCode;
-      err += '\n Error Body Response is ' + JSON.stringify(res.body);
-    }
-    if (err) {
-      return cb(err, res.body);
-    }
-    
-    // Try to parse response
-    if (body !== Object(body)) {
-      if (!parseResponse) {
-        body = res.body;
-        cb(null, body);
-        return
-      }
-
-      try {
-        body = JSON.parse(res.toJSON().body);
-      } catch (e) {
-        return cb('Could not parse response from localize-service: ' + body, null);
-      }
+      options.data = formData;
     }
 
-    // Check for error returned in a 200 response
-    if (body.opstat === 'error') {
-      if (body.err) return cb(body.err);
-      return cb(err);
-    }
+    axios(options)
+      .then(function (response) {
+        cb(null, response.data);
+      })
+      .catch(function (error) {
 
-    // Make sure response is OK
-    if (body['tracking-id']) body = body.response;
+        let errorMessage;
 
-    // Return response
-    cb(null, body);
+        if (error && error.response.data && error.response.data.meta.status !== 200) {
+          errorMessage = 'Something went wrong. localize-service responded with a ' + error.response.data.meta.status;
+          errorMessage += '\n Error Body Response is ' + error.response.data.meta.error.message;
+        } else {
+          // Catch connection errors
+          let returnErr = 'Error connecting to localize-service';
+          if (error) returnErr += ': ' + error.response.data.meta.status;
+          errorMessage = returnErr;
+        }
+        cb(errorMessage, error.response.data);
+      })
   };
 };
 

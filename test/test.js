@@ -582,7 +582,6 @@ describe('Localize APIs', () => {
                 fileName: 'uploadDoc',
                 language: 'zh',
                 content: __dirname + '/to-translte.csv',
-
             };
             localizeService.documents.createTranslation(data, function (err, result) {
                 if (err) {
