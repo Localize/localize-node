@@ -39,7 +39,11 @@ const createMethod = (method, apiKey) => {
       }
 
       // Add data to request
-      options.data = data || {};
+      if(method === 'POST') {
+        options.data = data || {};
+      } else {
+        options.params = data;
+      }
     } else {
       options.headers['content-type'] = 'multipart/form-data';
 

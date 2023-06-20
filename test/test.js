@@ -5,8 +5,8 @@ let should = require('should');
 
 // In order to run tests you will need to include
 // an API key and a project key below
-const API_key = '';
-const project_key = '';
+const API_key = '4e94c062c09b495b86c805c8d6657da6';
+const project_key = 'FmQk9Ed2LNQ2B';
 
 const localizeService = require('../main')(API_key);
 
