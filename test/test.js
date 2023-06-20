@@ -246,8 +246,7 @@ describe('Localize APIs', () => {
                 result.data.should.be.an.Array();
 
                 // find first non-system label
-                const label = result.data.find(l => l.name.indexOf('lz-') !== 0);
-                // console.log(label)
+                const label = result.data.find(l => l.name.indexOf('lz') !== 0);
                 projectTestData.labelId = label._id;
                 done();
             });
