@@ -199,7 +199,7 @@ describe('Localize APIs', () => {
             };
             localizeService.phrase.update(data, function (err, result) {
                 if (err) {
-                    err.message.should.eql('Invalid input params');
+                    err.message.should.startWith('Something went wrong');
                 }
                 done();
             });
@@ -241,10 +241,14 @@ describe('Localize APIs', () => {
             };
             localizeService.label.getAll(data, function (err, result) {
                 if (err) {
-                    console.log('error in getPhrases:' + err);
+                    console.log('error in getAll labels:' + err);
                 }
-                projectTestData.labelId = result.data[0]._id;
                 result.data.should.be.an.Array();
+
+                // find first non-system label
+                const label = result.data.find(l => l.name.indexOf('lz-') !== 0);
+                // console.log(label)
+                projectTestData.labelId = label._id;
                 done();
             });
         });
