@@ -5,8 +5,8 @@ let should = require('should');
 
 // In order to run tests you will need to include
 // an API key and a project key below
-const API_key = '4e94c062c09b495b86c805c8d6657da6';
-const project_key = 'FmQk9Ed2LNQ2B';
+const API_key = '';
+const project_key = '';
 
 const localizeService = require('../main')(API_key);
 
@@ -438,12 +438,14 @@ describe('Localize APIs', () => {
                 state: 'active',
                 comment: 'testing',
             };
+
             localizeService.translation.update(data, function (err, result) {
                 if (err) {
                     console.log('error in updateATranslation:' + err);
                 }
                 result.meta.status.should.be.eql(200);
                 result.data.translation.should.have.property('_id');
+                result.data.translation._id.should.be.eql(projectTestData.translationId);
                 done();
             });
         });
@@ -466,6 +468,7 @@ describe('Localize APIs', () => {
                 projectKey: project_key,
                 translationId: projectTestData.translationId,
             };
+
             localizeService.translation.deleteOne(data, function (err, result) {
                 if (err) {
                     console.log('error in deleteATranslation:' + err);
