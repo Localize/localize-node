@@ -39,7 +39,11 @@ const createMethod = (method, apiKey) => {
       }
 
       // Add data to request
-      options.data = data || {};
+      if(method === 'POST') {
+        options.data = data || {};
+      } else {
+        options.params = data;
+      }
     } else {
       options.headers['content-type'] = 'multipart/form-data';
 
@@ -62,7 +66,6 @@ const createMethod = (method, apiKey) => {
         cb(null, response.data);
       })
       .catch(function (error) {
-
         let errorMessage;
 
         if (error && error.response.data && error.response.data.meta.status !== 200) {
@@ -74,7 +77,7 @@ const createMethod = (method, apiKey) => {
           if (error) returnErr += ': ' + error.response.data.meta.status;
           errorMessage = returnErr;
         }
-        cb(errorMessage, error.response.data);
+        cb(new Error(errorMessage), error.response.data);
       })
   };
 };
@@ -147,7 +150,7 @@ module.exports = function (apiKey) {
         const endPoint = 'projects/' + data.projectKey + '/phrases';
         put(endPoint, data, function (err, result) {
           if (err) return done(err);
-          done(null, result);
+          return done(null, result);
         })
       },
       // Delete a phrase
