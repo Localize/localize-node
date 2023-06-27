@@ -1,6 +1,6 @@
 {
   "name": "@localize/node",
-  "version": "1.3.0",
+  "version": "1.3.1",
   "license": "MIT",
   "description": "Localize API for Node.js",
   "homepage": "https://github.com/localize/localize-node",
