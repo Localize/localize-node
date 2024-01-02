@@ -247,15 +247,6 @@ module.exports = function (apiKey) {
           done(null, result);
         })
       },
-      // Delete a translation
-      deleteOne: (data, done) => {
-        if (!data.projectKey || !data.translationId) return done(new Error('Invalid input params'));
-        const endPoint = 'projects/' + data.projectKey + '/translations/' + data.translationId;
-        deleteCall(endPoint, function (err, result) {
-          if (err) return done(err);
-          done(null, result);
-        })
-      },
 
     },
     content: {

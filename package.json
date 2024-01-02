@@ -20,7 +20,7 @@
     "url": "https://localizejs.com"
   },
   "dependencies": {
-    "axios": "1.4.0",
+    "axios": "1.6.3",
     "underscore": "1.13.6"
   },
   "devDependencies": {
