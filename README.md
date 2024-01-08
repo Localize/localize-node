@@ -186,15 +186,6 @@ Endpoints
 
     ---
 
-    localizeService.translation.deleteOne({
-            projectKey: <your projectkey>,
-            translationId: <translationId>,
-        }, callback);
-
-    Required fields: projectKey, translationId       
-
-    ---
-
 **localizeServices.content**
 
     localizeService.content.import({
