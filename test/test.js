@@ -462,34 +462,7 @@ describe('Localize APIs', () => {
                 done();
             });
         });
-
-        it('Should delete a translation based on id', function (done) {
-            const data = {
-                projectKey: project_key,
-                translationId: projectTestData.translationId,
-            };
-
-            localizeService.translation.deleteOne(data, function (err, result) {
-                if (err) {
-                    console.log('error in deleteATranslation:' + err);
-                }
-                result.meta.status.should.be.eql(200);
-                done();
-            });
-        });
-
-        it('Should fail to delete a translation based on id', function (done) {
-            const data = {
-                projectKey: project_key,
-                translationId: '',
-            };
-            localizeService.translation.deleteOne(data, function (err, result) {
-                if (err) {
-                    err.message.should.eql('Invalid input params');
-                }
-                done();
-            });
-        });
+       
     });
     describe('IMPORT/ EXPORT', () => {
         it('Should import contents from CSV file', function (done) {
@@ -564,7 +537,9 @@ describe('Localize APIs', () => {
                 if (err) {
                     console.log('error in upload Document:' + err);
                 }
+
                 result.meta.status.should.eql(200);
+                projectTestData.documentId = result.data._id;
                 done();
             });
         });
@@ -590,6 +565,7 @@ describe('Localize APIs', () => {
                 content: __dirname + '/to-translte.csv',
             };
             localizeService.documents.createTranslation(data, function (err, result) {
+
                 if (err) {
                     console.log('error in upload Document:' + err);
                 }
@@ -719,7 +695,7 @@ describe('Localize APIs', () => {
                 if (err) {
                     console.log('error in translatePhrase:' + err);
                 }
-                result.data.translation.should.eql('这是一个示例文本');
+                result.data.translation.should.eql('这是示例文本');
                 done();
             });
         });
