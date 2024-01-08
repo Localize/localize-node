@@ -3,6 +3,11 @@ All notable changes to this project will be documented in this file.
 
 Please see the [Backend API Documentation](https://help.localizejs.com/reference/introduction) for the services provided by this SDK.
 
+## [1.4.0] - 2024-01-08
+### Changed
+- updated dependencies
+- removed unused translation deleteOne method
+
 ## [1.3.1] - 2023-06-27
 ### Changed
 - updated dependencies
