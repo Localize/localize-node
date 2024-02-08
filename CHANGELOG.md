@@ -3,6 +3,10 @@ All notable changes to this project will be documented in this file.
 
 Please see the [Backend API Documentation](https://help.localizejs.com/reference/introduction) for the services provided by this SDK.
 
+## [1.5.0] - 2024-02-08
+### Changed
+- updated dependencies
+
 ## [1.4.0] - 2024-01-08
 ### Changed
 - updated dependencies
