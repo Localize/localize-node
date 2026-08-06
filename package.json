@@ -24,7 +24,7 @@
     "underscore": "1.13.8"
   },
   "devDependencies": {
-    "mocha": "^11.8.0",
+    "mocha": "11.8.0",
     "should": "13.2.3"
   },
   "overrides": {
