@@ -1,0 +1,31 @@
+
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:recommended",
+    "docker:pinDigests"
+  ],
+  "timezone": "America/Chicago",
+  "schedule": ["before 6am on monday"],
+  "labels": ["dependencies"],
+  "dependencyDashboard": true,
+  "prConcurrentLimit": 5,
+
+  "packageRules": [
+    {
+      "description": "Group all non-breaking patch and minor npm/pnpm updates",
+      "matchManagers": ["npm"],
+      "matchUpdateTypes": ["patch", "minor"],
+      "matchIsBreaking": false,
+      "groupName": "npm dependencies (patch & minor)",
+      "groupSlug": "npm-non-breaking"
+    },
+    {
+      "description": "Keep potentially breaking dependency updates separate for review",
+      "matchManagers": ["npm"],
+      "matchIsBreaking": true,
+      "addLabels": ["breaking-change"],
+      "prPriority": 10
+    }
+  ]
+}
