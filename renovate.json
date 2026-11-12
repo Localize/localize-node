@@ -1,0 +1,75 @@
+
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:recommended",
+    "docker:pinDigests"
+  ],
+  "timezone": "America/Chicago",
+  "schedule": ["* 0-5 * * 1"],
+  "labels": ["dependencies"],
+  "dependencyDashboard": true,
+  "prConcurrentLimit": 5,
+  "automerge": false,
+
+  "vulnerabilityAlerts": {
+    "enabled": true,
+    "addLabels": ["security"],
+    "prConcurrentLimit": 5
+  },
+
+  "packageRules": [
+    {
+      "description": "Group stable development dependency patches",
+      "matchManagers": ["npm"],
+      "matchDepTypes": ["devDependencies"],
+      "matchUpdateTypes": ["patch"],
+      "matchCurrentVersion": "!/^0\\./",
+      "groupName": "Development dependency patches",
+      "groupSlug": "dev-patches",
+      "addLabels": ["low-risk-candidate"]
+    },
+    {
+      "description": "Review production dependency updates",
+      "matchManagers": ["npm"],
+      "matchDepTypes": [
+        "dependencies",
+        "optionalDependencies",
+        "peerDependencies"
+      ],
+      "matchUpdateTypes": ["patch", "minor"],
+      "addLabels": ["runtime-review"]
+    },
+    {
+      "description": "Review all minor npm updates",
+      "matchManagers": ["npm"],
+      "matchUpdateTypes": ["minor"],
+      "addLabels": ["manual-review"]
+    },
+    {
+      "description": "Flag breaking dependency changes",
+      "matchManagers": ["npm"],
+      "matchIsBreaking": true,
+      "addLabels": ["breaking-change", "manual-review"]
+    },
+    {
+      "description": "Review pre-1.0 npm dependency updates",
+      "matchManagers": ["npm"],
+      "matchCurrentVersion": "/^0\\./",
+      "matchUpdateTypes": ["patch", "minor"],
+      "addLabels": ["manual-review"]
+    },
+    {
+      "description": "Review Docker image changes",
+      "matchManagers": ["dockerfile", "docker-compose"],
+      "matchDatasources": ["docker"],
+      "addLabels": ["container-review"]
+    },
+    {
+      "description": "Review Dockerfile Debian OS package changes",
+      "matchManagers": ["dockerfile"],
+      "matchDatasources": ["deb"],
+      "addLabels": ["os-package-review"]
+    }
+  ]
+}
