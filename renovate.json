@@ -14,7 +14,6 @@
 
   "vulnerabilityAlerts": {
     "enabled": true,
-    "addLabels": ["security"],
     "prConcurrentLimit": 5
   },
 
